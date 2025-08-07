@@ -20,11 +20,13 @@ export default function Tasks() {
 
   const { data: tasks = [] } = useQuery<any[]>({
     queryKey: ['/api/tasks', today],
+    queryFn: () => fetch(`/api/tasks?date=${today}`).then(res => res.json()),
     enabled: !!user,
   });
 
   const { data: waterIntake } = useQuery<any>({
     queryKey: ['/api/water-intake', today],
+    queryFn: () => fetch(`/api/water-intake?date=${today}`).then(res => res.json()),
     enabled: !!user,
   });
 

@@ -16,6 +16,7 @@ import {
   insertDailyPerformanceSchema
 } from "@shared/schema";
 import { preloadUserData } from "../client/src/lib/preload-data";
+import { format } from "date-fns";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const FIXED_USER_ID = "user-1"; // Single user ID since no auth needed
@@ -55,11 +56,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Task routes
-  app.get('/api/tasks/:date', async (req: any, res) => {
+  app.get('/api/tasks', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;
-      const { date } = req.params;
-      const tasks = await storage.getTasks(userId, date);
+      const date = req.query.date || format(new Date(), 'yyyy-MM-dd');
+      const tasks = await storage.getTasks(userId, date as string);
       res.json(tasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -83,6 +84,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const updates = req.body;
+      // Convert ISO string to Date if needed
+      if (updates.completedAt && typeof updates.completedAt === 'string') {
+        updates.completedAt = new Date(updates.completedAt);
+      }
       const task = await storage.updateTask(id, updates);
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
@@ -131,11 +136,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/workout-logs/:date', async (req: any, res) => {
+  app.get('/api/workout-logs', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;
-      const { date } = req.params;
-      const logs = await storage.getWorkoutLogs(userId, date);
+      const date = req.query.date || format(new Date(), 'yyyy-MM-dd');
+      const logs = await storage.getWorkoutLogs(userId, date as string);
       res.json(logs);
     } catch (error) {
       console.error("Error fetching workout logs:", error);
@@ -146,7 +151,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/workout-logs', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;
-      const logData = insertWorkoutLogSchema.parse({ ...req.body, userId });
+      const bodyData = { ...req.body, userId };
+      // Convert ISO string to Date if needed
+      if (bodyData.completedAt && typeof bodyData.completedAt === 'string') {
+        bodyData.completedAt = new Date(bodyData.completedAt);
+      }
+      const logData = insertWorkoutLogSchema.parse(bodyData);
       const log = await storage.createWorkoutLog(logData);
       res.json(log);
     } catch (error) {
@@ -159,6 +169,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const updates = req.body;
+      // Convert ISO string to Date if needed
+      if (updates.completedAt && typeof updates.completedAt === 'string') {
+        updates.completedAt = new Date(updates.completedAt);
+      }
       const log = await storage.updateWorkoutLog(id, updates);
       if (!log) {
         return res.status(404).json({ message: "Workout log not found" });
@@ -182,11 +196,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/mind-exercise-logs/:date', async (req: any, res) => {
+  app.get('/api/mind-exercise-logs', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;
-      const { date } = req.params;
-      const logs = await storage.getMindExerciseLogs(userId, date);
+      const date = req.query.date || format(new Date(), 'yyyy-MM-dd');
+      const logs = await storage.getMindExerciseLogs(userId, date as string);
       res.json(logs);
     } catch (error) {
       console.error("Error fetching mind exercise logs:", error);
@@ -197,7 +211,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/mind-exercise-logs', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;
-      const logData = insertMindExerciseLogSchema.parse({ ...req.body, userId });
+      const bodyData = { ...req.body, userId };
+      // Convert ISO string to Date if needed
+      if (bodyData.completedAt && typeof bodyData.completedAt === 'string') {
+        bodyData.completedAt = new Date(bodyData.completedAt);
+      }
+      const logData = insertMindExerciseLogSchema.parse(bodyData);
       const log = await storage.createMindExerciseLog(logData);
       res.json(log);
     } catch (error) {
@@ -210,6 +229,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const updates = req.body;
+      // Convert ISO string to Date if needed
+      if (updates.completedAt && typeof updates.completedAt === 'string') {
+        updates.completedAt = new Date(updates.completedAt);
+      }
       const log = await storage.updateMindExerciseLog(id, updates);
       if (!log) {
         return res.status(404).json({ message: "Mind exercise log not found" });
@@ -233,11 +256,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/routine-logs/:date', async (req: any, res) => {
+  app.get('/api/routine-logs', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;
-      const { date } = req.params;
-      const logs = await storage.getRoutineLogs(userId, date);
+      const date = req.query.date || format(new Date(), 'yyyy-MM-dd');
+      const logs = await storage.getRoutineLogs(userId, date as string);
       res.json(logs);
     } catch (error) {
       console.error("Error fetching routine logs:", error);
@@ -284,11 +307,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/dev-goal-logs/:date', async (req: any, res) => {
+  app.get('/api/dev-goal-logs', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;
-      const { date } = req.params;
-      const logs = await storage.getDevGoalLogs(userId, date);
+      const date = req.query.date || format(new Date(), 'yyyy-MM-dd');
+      const logs = await storage.getDevGoalLogs(userId, date as string);
       res.json(logs);
     } catch (error) {
       console.error("Error fetching dev goal logs:", error);
@@ -324,11 +347,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Water intake routes
-  app.get('/api/water-intake/:date', async (req: any, res) => {
+  app.get('/api/water-intake', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;
-      const { date } = req.params;
-      const intake = await storage.getWaterIntake(userId, date);
+      const date = req.query.date || format(new Date(), 'yyyy-MM-dd');
+      const intake = await storage.getWaterIntake(userId, date as string);
       res.json(intake || { amount: 0, target: 3000 });
     } catch (error) {
       console.error("Error fetching water intake:", error);
@@ -349,15 +372,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Daily performance routes
-  app.get('/api/daily-performance/:date', async (req: any, res) => {
+  app.get('/api/daily-performance', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;
-      const { date } = req.params;
-      const performance = await storage.getDailyPerformance(userId, date);
+      const date = req.query.date || format(new Date(), 'yyyy-MM-dd');
+      const performance = await storage.getDailyPerformance(userId, date as string);
       res.json(performance);
     } catch (error) {
       console.error("Error fetching daily performance:", error);
       res.status(500).json({ message: "Failed to fetch daily performance" });
+    }
+  });
+
+  app.get('/api/daily-performance/range/:startDate/:endDate', async (req: any, res) => {
+    try {
+      const userId = FIXED_USER_ID;
+      const { startDate, endDate } = req.params;
+      // For now, return empty array - would need to implement range query in storage
+      res.json([]);
+    } catch (error) {
+      console.error("Error fetching performance range:", error);
+      res.status(500).json({ message: "Failed to fetch performance range" });
     }
   });
 

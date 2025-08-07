@@ -23,16 +23,35 @@ export default function Routine() {
 
   const { data: routineLogs = [] } = useQuery<any[]>({
     queryKey: ['/api/routine-logs', today],
+    queryFn: () => fetch(`/api/routine-logs?date=${today}`).then(res => res.json()),
     enabled: !!user,
   });
 
   const morningRoutines = routines.filter(r => r.type === 'morning');
   const nightRoutines = routines.filter(r => r.type === 'night');
+  // For weekly routines, show only today's relevant ones
   const weeklyRoutines = routines.filter(r => r.type === 'weekly');
+  const todaysWeeklyRoutines = weeklyRoutines; // Show all for now, but user can check only today's
 
-  const completedRoutines = routineLogs.filter(log => log.completed).length;
-  const totalRoutines = routines.length;
-  const routinePercentage = totalRoutines > 0 ? Math.round((completedRoutines / totalRoutines) * 100) : 0;
+  // Calculate progress for all routine types
+  const completedMorning = routineLogs.filter(log => {
+    const routine = routines.find(r => r.id === log.routineId);
+    return routine && routine.type === 'morning' && log.completed;
+  }).length;
+  
+  const completedNight = routineLogs.filter(log => {
+    const routine = routines.find(r => r.id === log.routineId);
+    return routine && routine.type === 'night' && log.completed;
+  }).length;
+  
+  const completedWeekly = routineLogs.filter(log => {
+    const routine = routines.find(r => r.id === log.routineId);
+    return routine && routine.type === 'weekly' && log.completed;
+  }).length;
+  
+  const totalDaily = morningRoutines.length + nightRoutines.length + todaysWeeklyRoutines.length;
+  const completedDaily = completedMorning + completedNight + completedWeekly;
+  const routinePercentage = totalDaily > 0 ? Math.round((completedDaily / totalDaily) * 100) : 0;
 
   const updateRoutineLogMutation = useMutation({
     mutationFn: async ({ routineId, completed }: { routineId: string; completed: boolean }) => {
@@ -150,7 +169,7 @@ export default function Routine() {
                 <ProgressCircle percentage={routinePercentage} color="orange" size={80} />
                 <div>
                   <p className="text-sm text-gray-600">
-                    {routinePercentage === 100 ? "Almost done!" : `${completedRoutines} of ${totalRoutines} tasks completed`}
+                    {routinePercentage === 100 ? "All routines completed!" : `${completedDaily} of ${totalDaily} tasks completed`}
                   </p>
                   <p className="text-xs text-gray-500">
                     {routinePercentage >= 90 ? "Excellent progress!" : "Keep going!"}
@@ -179,7 +198,7 @@ export default function Routine() {
             </TabsContent>
             
             <TabsContent value="weekly" className="mt-4">
-              <RoutineList routines={weeklyRoutines} title="Weekly Routine" />
+              <RoutineList routines={todaysWeeklyRoutines} title="Today's Weekly Tasks" />
             </TabsContent>
           </Tabs>
         </section>

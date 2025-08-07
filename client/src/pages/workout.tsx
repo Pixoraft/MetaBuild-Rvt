@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProgressCircle } from "@/components/progress-circle";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { MoreVertical, Dumbbell } from "lucide-react";
 import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
@@ -24,21 +25,40 @@ export default function Workout() {
 
   const { data: workoutLogs = [] } = useQuery<any[]>({
     queryKey: ['/api/workout-logs', today],
+    queryFn: () => fetch(`/api/workout-logs?date=${today}`).then(res => res.json()),
     enabled: !!user,
   });
 
-  // Get today's workout type (simplified - using day of week)
+  // Get today's workout type based on day of week
   const dayOfWeek = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
-  const todaysWorkout = workoutTypes.find(w => w.name.includes(['Push', 'Pull', 'Legs', 'Core', 'Power', 'Stretch', 'Rest'][dayOfWeek]));
+  const [selectedDay, setSelectedDay] = useState(dayOfWeek);
+  const [selectedWorkoutType, setSelectedWorkoutType] = useState<string | null>(null);
+  
+  // Group workout types by weekly plans
+  const weeklyPlans = workoutTypes.filter(w => w.isWeekly);
+  const dayWorkouts = ['Rest', 'Push', 'Pull', 'Legs', 'Core', 'Power', 'Stretch'];
+  const todaysWorkout = workoutTypes.find(w => w.name.toLowerCase().includes(dayWorkouts[dayOfWeek].toLowerCase()));
 
-  const { data: todaysExercises = [] } = useQuery<any[]>({
-    queryKey: ['/api/exercises', todaysWorkout?.id],
-    enabled: !!todaysWorkout,
+  // Get exercises for selected workout type and day
+  const activeWorkoutType = selectedWorkoutType ? workoutTypes.find(w => w.id === selectedWorkoutType) : todaysWorkout;
+  const { data: exercises = [] } = useQuery<any[]>({
+    queryKey: ['/api/exercises', activeWorkoutType?.id],
+    queryFn: () => fetch(`/api/exercises/${activeWorkoutType?.id}`).then(res => res.json()),
+    enabled: !!activeWorkoutType,
   });
+  
+  // Filter exercises for selected day (only matters in weekly plan view)
+  const selectedDayExercises = selectedWorkoutType ? 
+    exercises.filter(e => e.dayOfWeek === selectedDay) : exercises;
 
-  const completedExercises = workoutLogs.filter(log => log.completed).length;
-  const totalExercises = todaysExercises.length;
-  const workoutPercentage = totalExercises > 0 ? Math.round((completedExercises / totalExercises) * 100) : 0;
+  // Only count today's workout progress for pie chart
+  const todaysExercises = exercises.filter(e => e.dayOfWeek === dayOfWeek || !selectedWorkoutType);
+  const todaysCompletedLogs = workoutLogs.filter(log => {
+    const exercise = todaysExercises.find(e => e.id === log.exerciseId);
+    return exercise && log.completed;
+  });
+  const workoutPercentage = todaysExercises.length > 0 ? 
+    Math.round((todaysCompletedLogs.length / todaysExercises.length) * 100) : 0;
 
   const updateWorkoutLogMutation = useMutation({
     mutationFn: async ({ exerciseId, completed }: { exerciseId: string; completed: boolean }) => {
@@ -119,7 +139,7 @@ export default function Workout() {
                 <ProgressCircle percentage={workoutPercentage} color="green" size={80} />
                 <div>
                   <p className="text-sm text-gray-600">
-                    {workoutPercentage === 100 ? "All exercises completed!" : `${completedExercises} of ${totalExercises} exercises`}
+                    {workoutPercentage === 100 ? "Today's workout complete!" : `${todaysCompletedLogs.length} of ${todaysExercises.length} exercises`}
                   </p>
                   <p className="text-xs text-green-600">
                     {workoutPercentage === 100 ? "Great job!" : "Keep going!"}
@@ -132,93 +152,155 @@ export default function Workout() {
 
         {/* Workout Tabs */}
         <section className="p-4">
-          <Tabs defaultValue="daily" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="daily">Daily Workout</TabsTrigger>
-              <TabsTrigger value="weekly">Weekly Plan</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="daily" className="space-y-3 mt-4">
-              {todaysExercises.length === 0 ? (
-                <Card>
-                  <CardContent className="p-6 text-center">
-                    <p className="text-gray-500">
-                      {dayOfWeek === 0 ? "Rest day! Take it easy and recover." : "No workout plan found for today."}
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                todaysExercises.map((exercise) => {
-                  const existingLog = workoutLogs.find(log => log.exerciseId === exercise.id);
-                  const isCompleted = existingLog?.completed || false;
-                  
-                  return (
-                    <Card key={exercise.id}>
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-gray-800">{exercise.name}</h3>
-                          <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">
-                            {exercise.sets && exercise.reps 
-                              ? `${exercise.sets} sets × ${exercise.reps} reps`
-                              : exercise.duration || 'Complete'
-                            }
-                          </span>
-                          <div className="flex items-center space-x-2">
-                            {isCompleted ? (
-                              <Badge variant="secondary" className="bg-green-100 text-green-700">
-                                ✓ Complete
-                              </Badge>
-                            ) : (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleToggleExercise(exercise.id)}
-                                disabled={updateWorkoutLogMutation.isPending}
-                              >
-                                Mark Complete
-                              </Button>
-                            )}
+          {selectedWorkoutType ? (
+            // Weekly Plan View with Day Tabs
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setSelectedWorkoutType(null)}
+                  className="text-blue-600"
+                >
+                  ← Back to Plans
+                </Button>
+                <h3 className="font-medium text-gray-800">
+                  {workoutTypes.find(w => w.id === selectedWorkoutType)?.name}
+                </h3>
+              </div>
+              
+              {/* Day Tabs */}
+              <Tabs value={selectedDay.toString()} onValueChange={(val) => setSelectedDay(parseInt(val))} className="w-full">
+                <TabsList className="grid w-full grid-cols-7 text-xs">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                    <TabsTrigger key={index} value={index.toString()} className="p-1">
+                      {day}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+                
+                {[0,1,2,3,4,5,6].map(dayIndex => (
+                  <TabsContent key={dayIndex} value={dayIndex.toString()} className="space-y-3 mt-4">
+                    {selectedDayExercises.length === 0 ? (
+                      <Card>
+                        <CardContent className="p-6 text-center">
+                          <p className="text-gray-500">
+                            {dayIndex === 0 ? "Rest day! Take it easy and recover." : "No exercises for this day."}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    ) : (
+                      selectedDayExercises.map((exercise) => {
+                        const existingLog = workoutLogs.find(log => log.exerciseId === exercise.id);
+                        const isCompleted = existingLog?.completed || false;
+                        
+                        return (
+                          <Card key={exercise.id}>
+                            <CardContent className="p-4">
+                              <div className="flex items-center space-x-3">
+                                <Checkbox
+                                  checked={isCompleted}
+                                  onCheckedChange={() => handleToggleExercise(exercise.id)}
+                                  disabled={updateWorkoutLogMutation.isPending}
+                                />
+                                <div className="flex-1">
+                                  <p className={`font-medium ${isCompleted ? 'line-through text-gray-500' : 'text-gray-700'}`}>
+                                    {exercise.name}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {exercise.sets && exercise.reps 
+                                      ? `${exercise.sets} sets × ${exercise.reps} reps`
+                                      : exercise.duration || 'Complete'
+                                    }
+                                  </p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })
+                    )}
+                  </TabsContent>
+                ))}
+              </Tabs>
+            </div>
+          ) : (
+            // Main Workout View
+            <Tabs defaultValue="daily" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="daily">Today's Workout</TabsTrigger>
+                <TabsTrigger value="weekly">Weekly Plans</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="daily" className="space-y-3 mt-4">
+                {todaysExercises.length === 0 ? (
+                  <Card>
+                    <CardContent className="p-6 text-center">
+                      <p className="text-gray-500">
+                        {dayOfWeek === 0 ? "Rest day! Take it easy and recover." : "No workout plan found for today."}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  todaysExercises.map((exercise) => {
+                    const existingLog = workoutLogs.find(log => log.exerciseId === exercise.id);
+                    const isCompleted = existingLog?.completed || false;
+                    
+                    return (
+                      <Card key={exercise.id}>
+                        <CardContent className="p-4">
+                          <div className="flex items-center space-x-3">
+                            <Checkbox
+                              checked={isCompleted}
+                              onCheckedChange={() => handleToggleExercise(exercise.id)}
+                              disabled={updateWorkoutLogMutation.isPending}
+                            />
+                            <div className="flex-1">
+                              <p className={`font-medium ${isCompleted ? 'line-through text-gray-500' : 'text-gray-700'}`}>
+                                {exercise.name}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {exercise.sets && exercise.reps 
+                                  ? `${exercise.sets} sets × ${exercise.reps} reps`
+                                  : exercise.duration || 'Complete'
+                                }
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })
-              )}
-            </TabsContent>
-            
-            <TabsContent value="weekly" className="space-y-3 mt-4">
-              <div className="grid gap-3">
-                {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day, index) => {
-                  const dayWorkout = ['Rest', 'Push', 'Pull', 'Legs', 'Core', 'Power', 'Stretch'][index];
-                  const isToday = index === dayOfWeek;
-                  
-                  return (
-                    <Card key={day} className={isToday ? 'ring-2 ring-green-500' : ''}>
+                        </CardContent>
+                      </Card>
+                    );
+                  })
+                )}
+              </TabsContent>
+              
+              <TabsContent value="weekly" className="space-y-3 mt-4">
+                <div className="grid gap-3">
+                  {weeklyPlans.map((plan) => (
+                    <Card key={plan.id}>
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <h3 className="font-medium text-gray-800">{day}</h3>
-                            <p className="text-sm text-gray-600">{dayWorkout} Day</p>
+                            <h3 className="font-medium text-gray-800">{plan.name}</h3>
+                            <p className="text-sm text-gray-600">7-day workout plan • {plan.maxTime} min max</p>
                           </div>
-                          {isToday && (
-                            <Badge variant="secondary" className="bg-green-100 text-green-700">
-                              Today
-                            </Badge>
-                          )}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedWorkoutType(plan.id);
+                              setSelectedDay(dayOfWeek);
+                            }}
+                          >
+                            View Plan
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
-                  );
-                })}
-              </div>
-            </TabsContent>
-          </Tabs>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          )}
         </section>
       </main>
     </div>

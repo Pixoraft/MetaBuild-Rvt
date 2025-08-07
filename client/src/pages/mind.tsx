@@ -5,7 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProgressCircle } from "@/components/progress-circle";
-import { MoreVertical, Brain, Play } from "lucide-react";
+import { MoreVertical, Brain } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -22,6 +23,7 @@ export default function Mind() {
 
   const { data: mindLogs = [] } = useQuery<any[]>({
     queryKey: ['/api/mind-exercise-logs', today],
+    queryFn: () => fetch(`/api/mind-exercise-logs?date=${today}`).then(res => res.json()),
     enabled: !!user,
   });
 
@@ -177,15 +179,11 @@ export default function Mind() {
                           {isCompleted ? (
                             getStatusBadge(exercise)
                           ) : canStart ? (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleToggleExercise(exercise.id)}
+                            <Checkbox
+                              checked={false}
+                              onCheckedChange={() => handleToggleExercise(exercise.id)}
                               disabled={updateMindLogMutation.isPending}
-                            >
-                              <Play className="w-3 h-3 mr-1" />
-                              Start
-                            </Button>
+                            />
                           ) : (
                             getStatusBadge(exercise)
                           )}

@@ -23,6 +23,12 @@ export function CalendarGrid({ currentDate }: CalendarGridProps) {
   // Get performance data for the month (this would need to be implemented in the API)
   const { data: monthlyPerformance = [] } = useQuery<any[]>({
     queryKey: ['/api/daily-performance/range', format(monthStart, 'yyyy-MM-dd'), format(monthEnd, 'yyyy-MM-dd')],
+    queryFn: async () => {
+      const startDate = format(monthStart, 'yyyy-MM-dd');
+      const endDate = format(monthEnd, 'yyyy-MM-dd');
+      const response = await fetch(`/api/daily-performance/range/${startDate}/${endDate}`);
+      return response.json();
+    },
     enabled: !!user,
   });
 
@@ -60,8 +66,8 @@ export function CalendarGrid({ currentDate }: CalendarGridProps) {
       <CardContent className="p-4">
         {/* Calendar Grid */}
         <div className="grid grid-cols-7 gap-1 mb-2">
-          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => (
-            <div key={day} className="text-center text-xs font-medium text-gray-500 py-2">
+          {['S', 'M', 'T', 'W', 'Th', 'F', 'S'].map((day, index) => (
+            <div key={`day-header-${index}`} className="text-center text-xs font-medium text-gray-500 py-2">
               {day}
             </div>
           ))}
