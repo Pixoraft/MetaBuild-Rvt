@@ -66,12 +66,18 @@ async function calculateAndUpdateDailyPerformance(userId: string, date: string) 
       overallScore
     });
 
-    // Update streak if overall score >= 80%
-    if (overallScore >= 80) {
-      const user = await storage.getUser(userId);
-      if (user) {
-        const currentStreak = user.currentStreak || 0;
-        const bestStreak = user.bestStreak || 0;
+    // Update streak based on performance
+    const user = await storage.getUser(userId);
+    if (user) {
+      const currentStreak = user.currentStreak || 0;
+      const bestStreak = user.bestStreak || 0;
+      
+      // Check if this is a new day's performance (avoid double counting same day)
+      const today = format(new Date(), 'yyyy-MM-dd');
+      const isToday = date === today;
+      
+      if (overallScore >= 70 && isToday) {
+        // Good performance - increase streak for today only
         const newStreak = currentStreak + 1;
         const newBestStreak = Math.max(newStreak, bestStreak);
         await storage.upsertUser({
@@ -83,11 +89,8 @@ async function calculateAndUpdateDailyPerformance(userId: string, date: string) 
           currentStreak: newStreak,
           bestStreak: newBestStreak
         });
-      }
-    } else {
-      // Reset streak if below 80%
-      const user = await storage.getUser(userId);
-      if (user && (user.currentStreak || 0) > 0) {
+      } else if (overallScore < 70 && isToday && currentStreak > 0) {
+        // Poor performance today - reset streak
         await storage.upsertUser({
           id: userId,
           email: user.email,
@@ -95,7 +98,7 @@ async function calculateAndUpdateDailyPerformance(userId: string, date: string) 
           lastName: user.lastName,
           profileImageUrl: user.profileImageUrl,
           currentStreak: 0,
-          bestStreak: user.bestStreak || 0
+          bestStreak: bestStreak
         });
       }
     }

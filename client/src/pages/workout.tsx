@@ -52,12 +52,21 @@ export default function Workout() {
   const selectedDayExercises = selectedWorkoutType ? 
     exercises.filter(e => e.dayOfWeek === selectedDay) : exercises;
 
-  // Only count today's workout progress for pie chart
-  const todaysExercises = exercises.filter(e => e.dayOfWeek === dayOfWeek || !selectedWorkoutType);
+  // Count today's workout progress including both daily and weekly workouts for today
+  const todaysExercises = exercises.filter(e => {
+    // If we're in selectedWorkoutType mode, filter by selected day
+    if (selectedWorkoutType) {
+      return e.dayOfWeek === dayOfWeek;
+    }
+    // Otherwise, include all exercises that should run today (includes weekly workouts for today)
+    return !e.dayOfWeek || e.dayOfWeek === dayOfWeek;
+  });
+  
   const todaysCompletedLogs = workoutLogs.filter(log => {
     const exercise = todaysExercises.find(e => e.id === log.exerciseId);
     return exercise && log.completed;
   });
+  
   const workoutPercentage = todaysExercises.length > 0 ? 
     Math.round((todaysCompletedLogs.length / todaysExercises.length) * 100) : 0;
 
@@ -152,8 +161,8 @@ export default function Workout() {
         </div>
       </header>
 
-      {/* Today's Workout Distribution Pie Chart */}
-      {pieChartData.length > 0 && (
+      {/* Today's Workout Distribution Pie Chart - Only show in daily view, not weekly */}
+      {!selectedWorkoutType && pieChartData.length > 0 && (
         <section className="p-4">
           <Card>
             <CardHeader>

@@ -180,7 +180,7 @@ export default function Dashboard() {
                   <span className="text-sm font-medium text-gray-700">Workout Days</span>
                 </div>
                 <p className="text-2xl font-bold text-gray-800">
-                  {workoutLogs?.filter(w => w.completed).length || 0}/7
+                  {(workoutLogs?.filter(w => w.completed).length || 0) > 0 ? '1' : '0'}/7
                 </p>
                 <p className="text-xs text-green-600">This week</p>
               </CardContent>

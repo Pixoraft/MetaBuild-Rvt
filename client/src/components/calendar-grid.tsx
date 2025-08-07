@@ -39,11 +39,12 @@ export function CalendarGrid({ currentDate }: CalendarGridProps) {
     
     if (!performance) return 'bg-gray-200 text-gray-600';
     
-    const score = performance.overallScore;
+    const score = performance.overallScore || 0;
     if (score >= 90) return 'bg-green-500 text-white'; // Great
     if (score >= 75) return 'bg-blue-500 text-white';  // Good
     if (score >= 50) return 'bg-orange-500 text-white'; // Okay
-    if (score > 0) return 'bg-red-500 text-white';     // Poor
+    if (score >= 25) return 'bg-red-500 text-white';   // Poor
+    if (score > 0) return 'bg-orange-500 text-white';  // Low activity
     return 'bg-gray-200 text-gray-600';                // No data
   };
 

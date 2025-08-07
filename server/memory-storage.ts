@@ -55,15 +55,16 @@ export class MemoryStorage implements IStorage {
 
   async upsertUser(userData: UpsertUser): Promise<User> {
     const now = new Date();
+    const existingUser = this.users.get(userData.id || '');
     const user: User = {
       id: userData.id || generateId(),
       email: userData.email || null,
       firstName: userData.firstName || null,
       lastName: userData.lastName || null,
       profileImageUrl: userData.profileImageUrl || null,
-      currentStreak: userData.currentStreak || 0,
-      bestStreak: userData.bestStreak || 0,
-      createdAt: now,
+      currentStreak: userData.currentStreak !== undefined ? userData.currentStreak : (existingUser?.currentStreak || 0),
+      bestStreak: userData.bestStreak !== undefined ? userData.bestStreak : (existingUser?.bestStreak || 0),
+      createdAt: existingUser?.createdAt || now,
       updatedAt: now,
     };
     this.users.set(user.id, user);
