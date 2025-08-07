@@ -246,6 +246,7 @@ export class MemoryStorage implements IStorage {
       name: routine.name,
       description: routine.description ?? null,
       type: routine.type,
+      dayOfWeek: routine.dayOfWeek ?? null,
       orderIndex: routine.orderIndex ?? 0,
       createdAt: new Date(),
     };

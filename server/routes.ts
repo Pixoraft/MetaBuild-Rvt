@@ -43,8 +43,15 @@ async function calculateAndUpdateDailyPerformance(userId: string, date: string) 
     const mindScore = mindExercises.length > 0 ? Math.round((completedMind / mindExercises.length) * 100) : 0;
 
     const completedRoutines = routineLogs.filter(r => r.completed).length;
-    const routines = await storage.getRoutines(userId);
-    const routineScore = routines.length > 0 ? Math.round((completedRoutines / routines.length) * 100) : 0;
+    const allRoutines = await storage.getRoutines(userId);
+    // Only count today's relevant routines (morning, night, and weekly for today's day)
+    const dayOfWeek = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const todaysRoutines = allRoutines.filter(r => 
+      r.type === 'morning' || 
+      r.type === 'night' || 
+      (r.type === 'weekly' && r.dayOfWeek === dayOfWeek)
+    );
+    const routineScore = todaysRoutines.length > 0 ? Math.round((completedRoutines / todaysRoutines.length) * 100) : 0;
 
     const completedDev = devGoalLogs.filter(d => d.completed).length;
     const allDevGoals = await storage.getDevGoals(userId);

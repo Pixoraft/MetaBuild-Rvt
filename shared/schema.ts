@@ -106,6 +106,7 @@ export const routines = pgTable("routines", {
   name: text("name").notNull(),
   description: text("description"),
   type: varchar("type").notNull(), // "morning", "night", "weekly"
+  dayOfWeek: integer("day_of_week"), // 0-6 (Sun-Sat) for weekly routines
   orderIndex: integer("order_index").default(0),
   createdAt: timestamp("created_at").defaultNow(),
 });

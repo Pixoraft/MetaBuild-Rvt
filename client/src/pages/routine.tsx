@@ -34,12 +34,8 @@ export default function Routine() {
   const dayOfWeek = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
   const weeklyRoutines = routines.filter(r => r.type === 'weekly');
   const todaysWeeklyRoutines = weeklyRoutines.filter(r => {
-    // If routine has a specific day assignment, check it matches today
-    if (r.dayOfWeek !== undefined && r.dayOfWeek !== null) {
-      return r.dayOfWeek === dayOfWeek;
-    }
-    // Otherwise show all weekly routines for flexibility
-    return true;
+    // Only show weekly routines assigned to today's day of week
+    return r.dayOfWeek === dayOfWeek;
   });
 
   // Calculate progress for all routine types

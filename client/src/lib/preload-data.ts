@@ -227,12 +227,12 @@ export async function preloadUserData(userId: string) {
     { name: "Moisturizer", description: "Hydrate overnight", type: "night", orderIndex: 2 },
     { name: "Milk & Potato Remedy", description: "For dark areas", type: "night", orderIndex: 3 },
     
-    // Weekly routines
-    { name: "Lip Scrub", description: "Tue/Thu/Sat", type: "weekly", orderIndex: 0 },
-    { name: "Exfoliation", description: "Sun/Wed/Fri", type: "weekly", orderIndex: 1 },
-    { name: "Ubtan Body Mask", description: "Tue/Thu/Sat", type: "weekly", orderIndex: 2 },
-    { name: "Lemon & Baking Soda", description: "Mon/Fri", type: "weekly", orderIndex: 3 },
-    { name: "Hair Oil Massage + Wash", description: "Wed/Sat/Thu/Sun", type: "weekly", orderIndex: 4 },
+    // Weekly routines - assigned to specific days (0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat)
+    { name: "Lip Scrub", description: "Tuesday routine", type: "weekly", dayOfWeek: 2, orderIndex: 0 },
+    { name: "Exfoliation", description: "Wednesday routine", type: "weekly", dayOfWeek: 3, orderIndex: 1 },
+    { name: "Ubtan Body Mask", description: "Thursday routine", type: "weekly", dayOfWeek: 4, orderIndex: 2 },
+    { name: "Lemon & Baking Soda", description: "Friday routine", type: "weekly", dayOfWeek: 5, orderIndex: 3 },
+    { name: "Hair Oil Massage + Wash", description: "Saturday routine", type: "weekly", dayOfWeek: 6, orderIndex: 4 },
   ];
 
   await Promise.all(
@@ -242,6 +242,7 @@ export async function preloadUserData(userId: string) {
         name: routine.name,
         description: routine.description,
         type: routine.type,
+        dayOfWeek: routine.dayOfWeek,
         orderIndex: routine.orderIndex,
       });
     })
