@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { isUnauthorizedError } from "@/lib/authUtils";
 
 interface AddTaskModalProps {
   open: boolean;
@@ -40,17 +39,6 @@ export function AddTaskModal({ open, onOpenChange }: AddTaskModalProps) {
       onOpenChange(false);
     },
     onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-        return;
-      }
       toast({ title: "Error creating task", variant: "destructive" });
     },
   });

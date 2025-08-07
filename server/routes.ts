@@ -1,7 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
 import { 
   insertTaskSchema,
   insertWorkoutTypeSchema,
@@ -19,14 +18,24 @@ import {
 import { preloadUserData } from "../client/src/lib/preload-data";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
+  const FIXED_USER_ID = "user-1"; // Single user ID since no auth needed
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  // Create user if not exists and initialize data
+  app.get('/api/auth/user', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
+      let user = await storage.getUser(FIXED_USER_ID);
+      if (!user) {
+        user = await storage.upsertUser({
+          id: FIXED_USER_ID,
+          email: "user@example.com",
+          firstName: "User",
+          lastName: "One",
+          profileImageUrl: null,
+          currentStreak: 0,
+          bestStreak: 0,
+        });
+        await preloadUserData(FIXED_USER_ID);
+      }
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -35,10 +44,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Initialize user data with preloaded content
-  app.post('/api/initialize', isAuthenticated, async (req: any, res) => {
+  app.post('/api/initialize', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      await preloadUserData(userId);
+      await preloadUserData(FIXED_USER_ID);
       res.json({ message: "User data initialized successfully" });
     } catch (error) {
       console.error("Error initializing user data:", error);
@@ -47,9 +55,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Task routes
-  app.get('/api/tasks/:date', isAuthenticated, async (req: any, res) => {
+  app.get('/api/tasks/:date', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const { date } = req.params;
       const tasks = await storage.getTasks(userId, date);
       res.json(tasks);
@@ -59,9 +67,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/tasks', isAuthenticated, async (req: any, res) => {
+  app.post('/api/tasks', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const taskData = insertTaskSchema.parse({ ...req.body, userId });
       const task = await storage.createTask(taskData);
       res.json(task);
@@ -71,7 +79,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/tasks/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/tasks/:id', async (req: any, res) => {
     try {
       const { id } = req.params;
       const updates = req.body;
@@ -86,7 +94,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/tasks/:id', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/tasks/:id', async (req: any, res) => {
     try {
       const { id } = req.params;
       const success = await storage.deleteTask(id);
@@ -101,9 +109,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Workout routes
-  app.get('/api/workout-types', isAuthenticated, async (req: any, res) => {
+  app.get('/api/workout-types', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const workoutTypes = await storage.getWorkoutTypes(userId);
       res.json(workoutTypes);
     } catch (error) {
@@ -112,7 +120,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/exercises/:workoutTypeId', isAuthenticated, async (req: any, res) => {
+  app.get('/api/exercises/:workoutTypeId', async (req: any, res) => {
     try {
       const { workoutTypeId } = req.params;
       const exercises = await storage.getExercises(workoutTypeId);
@@ -123,9 +131,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/workout-logs/:date', isAuthenticated, async (req: any, res) => {
+  app.get('/api/workout-logs/:date', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const { date } = req.params;
       const logs = await storage.getWorkoutLogs(userId, date);
       res.json(logs);
@@ -135,9 +143,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/workout-logs', isAuthenticated, async (req: any, res) => {
+  app.post('/api/workout-logs', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const logData = insertWorkoutLogSchema.parse({ ...req.body, userId });
       const log = await storage.createWorkoutLog(logData);
       res.json(log);
@@ -147,7 +155,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/workout-logs/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/workout-logs/:id', async (req: any, res) => {
     try {
       const { id } = req.params;
       const updates = req.body;
@@ -163,9 +171,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Mind exercise routes
-  app.get('/api/mind-exercises', isAuthenticated, async (req: any, res) => {
+  app.get('/api/mind-exercises', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const exercises = await storage.getMindExercises(userId);
       res.json(exercises);
     } catch (error) {
@@ -174,9 +182,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/mind-exercise-logs/:date', isAuthenticated, async (req: any, res) => {
+  app.get('/api/mind-exercise-logs/:date', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const { date } = req.params;
       const logs = await storage.getMindExerciseLogs(userId, date);
       res.json(logs);
@@ -186,9 +194,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/mind-exercise-logs', isAuthenticated, async (req: any, res) => {
+  app.post('/api/mind-exercise-logs', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const logData = insertMindExerciseLogSchema.parse({ ...req.body, userId });
       const log = await storage.createMindExerciseLog(logData);
       res.json(log);
@@ -198,7 +206,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/mind-exercise-logs/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/mind-exercise-logs/:id', async (req: any, res) => {
     try {
       const { id } = req.params;
       const updates = req.body;
@@ -214,9 +222,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Routine routes
-  app.get('/api/routines', isAuthenticated, async (req: any, res) => {
+  app.get('/api/routines', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const routines = await storage.getRoutines(userId);
       res.json(routines);
     } catch (error) {
@@ -225,9 +233,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/routine-logs/:date', isAuthenticated, async (req: any, res) => {
+  app.get('/api/routine-logs/:date', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const { date } = req.params;
       const logs = await storage.getRoutineLogs(userId, date);
       res.json(logs);
@@ -237,9 +245,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/routine-logs', isAuthenticated, async (req: any, res) => {
+  app.post('/api/routine-logs', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const logData = insertRoutineLogSchema.parse({ ...req.body, userId });
       const log = await storage.createRoutineLog(logData);
       res.json(log);
@@ -249,7 +257,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/routine-logs/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/routine-logs/:id', async (req: any, res) => {
     try {
       const { id } = req.params;
       const updates = req.body;
@@ -265,9 +273,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Dev goal routes
-  app.get('/api/dev-goals', isAuthenticated, async (req: any, res) => {
+  app.get('/api/dev-goals', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const goals = await storage.getDevGoals(userId);
       res.json(goals);
     } catch (error) {
@@ -276,9 +284,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/dev-goal-logs/:date', isAuthenticated, async (req: any, res) => {
+  app.get('/api/dev-goal-logs/:date', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const { date } = req.params;
       const logs = await storage.getDevGoalLogs(userId, date);
       res.json(logs);
@@ -288,9 +296,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/dev-goal-logs', isAuthenticated, async (req: any, res) => {
+  app.post('/api/dev-goal-logs', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const logData = insertDevGoalLogSchema.parse({ ...req.body, userId });
       const log = await storage.createDevGoalLog(logData);
       res.json(log);
@@ -300,7 +308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/dev-goal-logs/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/dev-goal-logs/:id', async (req: any, res) => {
     try {
       const { id } = req.params;
       const updates = req.body;
@@ -316,9 +324,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Water intake routes
-  app.get('/api/water-intake/:date', isAuthenticated, async (req: any, res) => {
+  app.get('/api/water-intake/:date', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const { date } = req.params;
       const intake = await storage.getWaterIntake(userId, date);
       res.json(intake || { amount: 0, target: 3000 });
@@ -328,9 +336,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/water-intake', isAuthenticated, async (req: any, res) => {
+  app.post('/api/water-intake', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const intakeData = insertWaterIntakeSchema.parse({ ...req.body, userId });
       const intake = await storage.upsertWaterIntake(intakeData);
       res.json(intake);
@@ -341,9 +349,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Daily performance routes
-  app.get('/api/daily-performance/:date', isAuthenticated, async (req: any, res) => {
+  app.get('/api/daily-performance/:date', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const { date } = req.params;
       const performance = await storage.getDailyPerformance(userId, date);
       res.json(performance);
@@ -353,9 +361,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/daily-performance', isAuthenticated, async (req: any, res) => {
+  app.post('/api/daily-performance', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = FIXED_USER_ID;
       const performanceData = insertDailyPerformanceSchema.parse({ ...req.body, userId });
       const performance = await storage.upsertDailyPerformance(performanceData);
       res.json(performance);

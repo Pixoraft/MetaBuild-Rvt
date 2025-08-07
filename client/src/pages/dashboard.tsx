@@ -68,14 +68,9 @@ export default function Dashboard() {
                 {user?.currentStreak || 0}🔥
               </span>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-8 h-8 rounded-full p-0"
-              onClick={() => window.location.href = "/api/logout"}
-            >
-              👤
-            </Button>
+            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm">👤</span>
+            </div>
           </div>
         </div>
       </header>

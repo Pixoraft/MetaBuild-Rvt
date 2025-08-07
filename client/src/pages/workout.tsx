@@ -10,7 +10,6 @@ import { MoreVertical, Dumbbell } from "lucide-react";
 import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { isUnauthorizedError } from "@/lib/authUtils";
 
 export default function Workout() {
   const { user } = useAuth();
@@ -67,17 +66,6 @@ export default function Workout() {
       toast({ title: "Exercise updated successfully!" });
     },
     onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-        return;
-      }
       toast({ title: "Error updating exercise", variant: "destructive" });
     },
   });
@@ -110,14 +98,9 @@ export default function Workout() {
                 {user?.currentStreak || 0}🔥
               </span>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-8 h-8 rounded-full p-0"
-              onClick={() => window.location.href = "/api/logout"}
-            >
-              👤
-            </Button>
+            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm">👤</span>
+            </div>
           </div>
         </div>
       </header>

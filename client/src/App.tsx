@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import NotFound from "@/pages/not-found";
-import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
 import Tasks from "@/pages/tasks";
 import Workout from "@/pages/workout";
@@ -15,24 +14,27 @@ import Dev from "@/pages/dev";
 import Navigation from "@/components/navigation";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
 
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
-        <>
-          <div className="min-h-screen max-w-md mx-auto bg-white shadow-xl relative">
-            <Route path="/" component={Dashboard} />
-            <Route path="/tasks" component={Tasks} />
-            <Route path="/workout" component={Workout} />
-            <Route path="/mind" component={Mind} />
-            <Route path="/routine" component={Routine} />
-            <Route path="/dev" component={Dev} />
-            <Navigation />
+      {isLoading ? (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p>Loading...</p>
           </div>
-        </>
+        </div>
+      ) : (
+        <div className="min-h-screen max-w-md mx-auto bg-white shadow-xl relative">
+          <Route path="/" component={Dashboard} />
+          <Route path="/tasks" component={Tasks} />
+          <Route path="/workout" component={Workout} />
+          <Route path="/mind" component={Mind} />
+          <Route path="/routine" component={Routine} />
+          <Route path="/dev" component={Dev} />
+          <Navigation />
+        </div>
       )}
       <Route component={NotFound} />
     </Switch>
