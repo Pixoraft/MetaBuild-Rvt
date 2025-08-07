@@ -1,0 +1,242 @@
+Meta Build – Replit AI Full Prompt  
+(Personal Mobile-Only Productivity & Progress Tracker)
+
+Build a modern, full-stack webapp called "Meta Build" for me, as my personal all-in-one productivity companion.  
+This webapp must be designed ONLY for mobile devices first (no desktop version), with a world-class, simple, and clean UI, and only minimal necessary animations/effects (clarity/smoothness prioritized).  
+All user data (tasks, workout, routines, dev progress, etc.) MUST be saved to a secure backend server and synched -- do NOT use local storage only.
+
+**Handle ALL features, pages, design, backend, testing, and polish in one go:**  
+- Implement and test every requirement, state, and user action until the app works 100% perfectly and feels like it was built by a top 1% developer.
+- Do not ask iterative questions – parse and deliver ALL needs in one complete codebase.
+- Build the entire UI/UX, logic, state, backend, and sample data as directed.
+- Preload all my provided routines, plans, and dev goals (see below!) into the app as default/user-editable data.
+
+---
+
+Pages & Features:
+
+1. **Daily Task Page**
+   - Top: Pie chart showing today’s task progress.
+   - Right/top: Water intake (pie chart or simple tracker).
+   - Floating "+" button to add tasks (modal or input popup).
+   - Tasks: tap to reveal three-dot menu (edit/delete).
+
+2. **Workout Page**
+   - Top: Pie chart of today’s workout performance.
+   - Tabs: "Daily Workout" | "Weekly Workout"
+     - Daily: See and complete daily workouts (show name, reps/sets, with three-dots for actions). Preload my custom routines.
+     - Weekly: Tabs for each day; can view/complete current or other days. Missed workouts flagged separately.
+   - "+" button: Add Workout Type (choose weekly/daily, name, max time) or Add Workout (assign to day/type, multiple at once).
+   - *Default plans must include my full routine and grip plan (see below).*
+
+3. **Mind Workout Page**
+   - Top: Pie chart for today’s completed mind exercises.
+   - Loaded with my mental exercises schedule—edit/delete and add new via "+".
+   - Tasks: Tapping shows edit/delete options.
+
+4. **Daily Routine Page**
+   - Sections: Morning, Night, and Weekly routines (switchable, sticky header, or segmented tabs).
+   - Pie chart of routine completion for the day.
+   - "+" to add routine item (choose morning, night, or weekly, then fill details).
+   - All hygiene, hair, skin plans below must be built-in as editable templates!
+
+5. **Dev Progress Page**
+   - Visual progress bar/tracker for my weekly, monthly and yearly dev goals/milestones.
+   - Check off weekly items, which auto-completes higher-level milestones.
+   - Prompts for end-of-week/month/year review.
+   - All content must come pre-filled with my provided 2025-2030 trajectory, current year roadmap, and my daily dev routine checklist (see below).
+
+6. **Dashboard (Home) Page**
+   - Top: Streaks (current/highest).
+   - Bar graph: Today’s overall performance (tasks, workout, mind, routine, dev).
+   - Monthly calendar: color-coded for daily performance (finalizes at 12:01am), click day to show breakdown.
+   - More/month navigation; mini bar-chart for any day on click.
+   - Weekly summary and dev progress recaps below.
+   - All navigation, graphs, and buttons mobile-optimized, thumb-friendly.
+
+**Design/UI**
+- Only mobile–first views, NO desktop.
+- Clean, minimal, distraction-free. Only essential visual effects and feedback.
+- Consistent color palette, typography, and simple cards/containers for easy readability.
+- All buttons, charts, menus, modals – 1-tap, fast, no lag, clear feedback.
+- Accessibility: test contrast/interactions.
+
+**Data & Backend**
+- Save all user data to backend server.  
+- Allow auto-sync for seamless usage over many days/weeks.
+
+**Testing**
+- Confirm EVERY page, action, and state works on first build (no waiting for user feedback).
+- Run all tests for UI, state, data, edge cases – refactor for maintainability and stability.
+- Ship code "ready for the real world," clean and elite.
+
+---
+
+**Instructions for Replit AI**:  
+Do not ask further clarification or iterative questions. Parse every single requirement and preloaded plan below, code/test/deliver all built-in, as a ready-to-use app, with placeholder sample data (user can edit/replace).
+
+---
+
+## ⭐ Include These Preloaded Workout, Routine, & Dev Plans (Editable by User) ⭐
+
+### 1. **Weekly Workout Plan (7-Day Split)**
+- **Day 1 – Push (Chest/Shoulders/Triceps/Abs):**
+  - Normal Push-Ups – 4×25
+  - Incline Push-Ups – 3×25
+  - Pike Push-Ups – 3×15
+  - Diamond Push-Ups – 2×15
+  - Bench Dips – 3×25
+  - Russian Twists – 3×30
+  - Plank – 5 min
+- **Day 2 – Pull (Back/Biceps/Forearms/Grip):**
+  - Pull-Ups / Assisted – 4×12
+  - Towel Rows – 3×20
+  - Towel Bicep Curls – 3×20
+  - Reverse Curls – 3×15
+  - Gripper Fast – 3×40
+  - Farmer Hold – 2×45 sec
+  - Wrist Rolls – 2×20
+- **Day 3 – Legs (Quads/Glutes/Calves):**
+  - Squats – 4×25
+  - Jump Squats – 3×20
+  - Lunges – 3×20 steps
+  - Calf Raises – 4×30
+  - Wall Sit – 2×45 sec
+  - Broad Jumps – 2×15
+  - High Knees – 2×30
+- **Day 4 – Core & Abs (Six-Pack/Obliques/Stability):**
+  - Crunches – 3×25
+  - Leg Raises – 3×25
+  - Mountain Climbers – 3×30
+  - Plank – 3×1 min
+  - Side Plank – 2×1 min each
+  - V-Ups – 3×20
+  - Russian Twists – 3×30
+- **Day 5 – Power/Explosive/Grip & Veins:**
+  - Clap Pushups – 3×15
+  - Skipping – 5 min
+  - High Knees – 3×30
+  - Towel Bicep Curls – 2×25
+  - Wrist Rolls – 2×20
+  - Gripper Slow Squeeze – 2×15
+  - Hanging – 3×1 min
+- **Day 6 – BONUS Stretch & Pump Day (Light/Recovery):**
+  - Archer Pushups – 2×12
+  - Incline Pushups – 2×20
+  - Squats – 2×25
+  - Plank – 2×1 min
+  - Neck + Spine + Toe Touch Stretch – 3×30 sec
+  - Hanging – 2×1 min
+  - *Duration: Max 30–35 min*
+- **Day 7 – Rest Day (Optional Light Recovery):**
+  - Hanging – 1×1 min
+  - Cobra Stretch – 2×30 sec
+  - Light walk – 10 min
+  - Hydrate + protein if possible
+
+---
+
+### 2. **30-Day Gripper/Forearm Vein Plan**
+(Repeat each week 4x for 30 days, can scale up after)
+- **Monday – Volume Day:**  
+  - Gripper Fast Reps – 4×50  
+  - Slow Squeeze Gripper – 3×15 (3 sec squeeze)
+  - Towel Twist – 2×1 min  
+  - Wrist Rotations – 2×15  
+  - Stretch – 2 min
+- **Tuesday – Strength & Static Hold:**  
+  - Heavy Gripper – 3×10  
+  - Gripper Hold – 3×30 sec  
+  - Pinch Grip Hold – 3×30 sec  
+  - Wrist Curl – 3×15  
+  - Reverse Curl – 3×15  
+  - Finger Wall Pushups – 2×20 sec hold
+- **Wednesday – Recovery/Light Pump:**  
+  - Easy Gripper – 2×30  
+  - Towel Squeeze Light – 1×1 min  
+  - Wrist Mobility Circles – 2 min  
+  - Finger Flex-Extend – 1×50  
+  - Salt water soak – 5 min
+- **Thursday – Mixed Circuit:**  
+  - Gripper Explosives – 20 reps  
+  - Gripper Slow Hold – 15 reps  
+  - Wrist Curl – 15 reps  
+  - Reverse Curl – 15 reps  
+  - Pinch Grip – 30 sec  
+  - Farmer Carry – 1 min  
+  - Towel Twists – 2×1 min  
+  - Stretch – 2 min
+- **Friday – Reverse (Extensors):**  
+  - Rubber Band Finger Opens – 3×20  
+  - Wall Finger Push – 3×15  
+  - Reverse Wrist Curl – 3×20  
+  - Extensor stretch – 1 min/arm  
+  - Light Gripper – 2×20
+- **Saturday – Max Test & Burnout:**  
+  - Gripper Max Reps (1 set, record)  
+  - Close & Hold – 1×45 sec  
+  - Farmer Hold – 1 min  
+  - Pinch Hold – 45 sec  
+  - Bucket Walk – 10 steps × 2  
+  - Burnout: Gripper to failure, Finger pulse to failure
+- **Sunday – Rest/Recovery:**  
+  - Contrast soak, Stretch, Light towel twist
+
+---
+
+### 3. **Full Skincare, Haircare, Hygiene Plan – Preloaded as Daily/Night/Weekly Routines**
+- **Morning:**
+  - Lemon & Honey Detox Drink
+  - Ice Cubes on Face  
+  - Face & Body Wash  
+  - Malai + Honey + Haldi Pack  
+  - Moisturizer + SPF 50+ sunscreen
+- **Night:**
+  - Face & Body Cleansing  
+  - Face Serum  
+  - Moisturizer  
+  - Milk & Potato Remedy (for dark areas)
+- **Weekly Alternate Days:**
+  - Lip Scrub (Tue/Thu/Sat)
+  - Exfoliation (Sun/Wed/Fri)
+  - Ubtan Body Mask (Tue/Thu/Sat)
+  - Lemon & Baking Soda (Mon/Fri)
+- **Hair Care 2x/Week (Wed/Sat/Thur/Sun):**
+  - Oil Massage + Wash (with mild shampoo)
+- **Diet (Daily):**
+  - Amla juice or coconut water, Vitamin C foods, Carotene, etc.
+- **Hygiene:**
+  - Shower twice/day, Clean clothes, Talcum powder, Deodorant, Hydration
+
+---
+
+### 4. **Web Development Mastery – Goals to 2030 (All Preloaded & Editable)**
+- **Yearly Breakdown (2025–2030, as written above)**
+- **2025 Focus:**  
+  - Full Stack (HTML, CSS, JS, React, Node, Mongo, project clones, freelancing profile, earn ₹60K/mo)
+- **Weekly Routine for Dev:**
+  - DSA – 1–1.5h
+  - LeetCode – 30–45min
+  - React/WebDev – 1–1.5h
+  - JS Practice – 30–45min
+  - Project Building – 1h
+  - GitHub update/notes – 15min
+  - Rest/review – 15min
+
+---
+
+### 5. **Mind Workout Plan (Daily Schedule – Preloaded)**
+- 5:40 AM – Box Breathing + Sense Drill
+- 6:00 AM – Memory Palace Practice
+- 8:00 AM – Brain Challenge (riddle/puzzle)
+- 12:00 PM – Pattern Recognition Task  
+- 4:00 PM – Recall & Visualization  
+- 7:00 PM – Mental Map Review  
+- 9:30 PM – Mind Wind-Down
+
+---
+
+**Final Note:**
+Parse and use my routines, workout plans, skincare schedule, hygiene checklist, dev roadmap, and mind workout pillars – ALL as built-in, editable templates for user.  
+No further clarifications needed – just produce the code/app as if this is a finished, production-quality mobile app.
+
