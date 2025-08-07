@@ -47,8 +47,10 @@ async function calculateAndUpdateDailyPerformance(userId: string, date: string) 
     const routineScore = routines.length > 0 ? Math.round((completedRoutines / routines.length) * 100) : 0;
 
     const completedDev = devGoalLogs.filter(d => d.completed).length;
-    const devGoals = await storage.getDevGoals(userId);
-    const devScore = devGoals.length > 0 ? Math.round((completedDev / devGoals.length) * 100) : 0;
+    const allDevGoals = await storage.getDevGoals(userId);
+    // Only count daily development goals for today's performance
+    const dailyDevGoals = allDevGoals.filter(g => g.type === 'daily');
+    const devScore = dailyDevGoals.length > 0 ? Math.round((completedDev / dailyDevGoals.length) * 100) : 0;
 
     // Calculate overall score - only count categories with actual activity
     const scores = [tasksScore, workoutScore, mindScore, routineScore, devScore];
@@ -535,11 +537,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const date = req.query.date || format(new Date(), 'yyyy-MM-dd');
       let performance = await storage.getDailyPerformance(userId, date as string);
       
-      // If no performance data exists, calculate and create it
-      if (!performance) {
-        await calculateAndUpdateDailyPerformance(userId, date as string);
-        performance = await storage.getDailyPerformance(userId, date as string);
-      }
+      // Always recalculate performance to ensure latest logic
+      await calculateAndUpdateDailyPerformance(userId, date as string);
+      performance = await storage.getDailyPerformance(userId, date as string);
       
       res.json(performance || { tasksScore: 0, workoutScore: 0, mindScore: 0, routineScore: 0, devScore: 0, overallScore: 0 });
     } catch (error) {
