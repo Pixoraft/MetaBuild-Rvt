@@ -1,0 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(210, 25%, 7.8431%);
+  --card: hsl(180, 6.6667%, 97.0588%);
+  --card-foreground: hsl(210, 25%, 7.8431%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(210, 25%, 7.8431%);
+  --primary: hsl(203.8863, 88.2845%, 53.1373%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(159.7826, 100%, 36.0784%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --muted: hsl(240, 1.9608%, 90%);
+  --muted-foreground: hsl(210, 25%, 7.8431%);
+  --accent: hsl(211.5789, 51.3514%, 92.7451%);
+  --accent-foreground: hsl(203.8863, 88.2845%, 53.1373%);
+  --destructive: hsl(356.3033, 90.5579%, 54.3137%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --border: hsl(201.4286, 30.4348%, 90.9804%);
+  --input: hsl(200, 23.0769%, 97.4510%);
+  --ring: hsl(202.8169, 89.1213%, 53.1373%);
+  --chart-1: hsl(203.8863, 88.2845%, 53.1373%);
+  --chart-2: hsl(159.7826, 100%, 36.0784%);
+  --chart-3: hsl(42.0290, 92.8251%, 56.2745%);
+  --chart-4: hsl(147.1429, 78.5047%, 41.9608%);
+  --chart-5: hsl(341.4894, 75.2000%, 50.9804%);
+  --sidebar: hsl(180, 6.6667%, 97.0588%);
+  --sidebar-foreground: hsl(210, 25%, 7.8431%);
+  --sidebar-primary: hsl(203.8863, 88.2845%, 53.1373%);
+  --sidebar-primary-foreground: hsl(0, 0%, 100%);
+  --sidebar-accent: hsl(211.5789, 51.3514%, 92.7451%);
+  --sidebar-accent-foreground: hsl(203.8863, 88.2845%, 53.1373%);
+  --sidebar-border: hsl(205.0000, 25.0000%, 90.5882%);
+  --sidebar-ring: hsl(202.8169, 89.1213%, 53.1373%);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --radius: 0.75rem;
+  --shadow-2xs: 0px 1px 2px 0px hsl(0, 0%, 0%, 0.05);
+  --shadow-xs: 0px 1px 3px 0px hsl(0, 0%, 0%, 0.1), 0px 1px 2px 0px hsl(0, 0%, 0%, 0.06);
+  --shadow-sm: 0px 1px 3px 0px hsl(0, 0%, 0%, 0.1), 0px 1px 2px 0px hsl(0, 0%, 0%, 0.06);
+  --shadow: 0px 1px 3px 0px hsl(0, 0%, 0%, 0.1), 0px 1px 2px 0px hsl(0, 0%, 0%, 0.06);
+  --shadow-md: 0px 4px 6px -1px hsl(0, 0%, 0%, 0.1), 0px 2px 4px -1px hsl(0, 0%, 0%, 0.06);
+  --shadow-lg: 0px 10px 15px -3px hsl(0, 0%, 0%, 0.1), 0px 4px 6px -2px hsl(0, 0%, 0%, 0.05);
+  --shadow-xl: 0px 20px 25px -5px hsl(0, 0%, 0%, 0.1), 0px 10px 10px -5px hsl(0, 0%, 0%, 0.04);
+  --shadow-2xl: 0px 25px 50px -12px hsl(0, 0%, 0%, 0.25);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+.dark {
+  --background: hsl(0, 0%, 3.9216%);
+  --foreground: hsl(0, 0%, 98.0392%);
+  --card: hsl(0, 0%, 3.9216%);
+  --card-foreground: hsl(0, 0%, 98.0392%);
+  --popover: hsl(0, 0%, 3.9216%);
+  --popover-foreground: hsl(0, 0%, 98.0392%);
+  --primary: hsl(0, 0%, 98.0392%);
+  --primary-foreground: hsl(240, 5.8824%, 10%);
+  --secondary: hsl(240, 3.7037%, 15.8824%);
+  --secondary-foreground: hsl(0, 0%, 98.0392%);
+  --muted: hsl(240, 3.7037%, 15.8824%);
+  --muted-foreground: hsl(240, 5.0000%, 64.9020%);
+  --accent: hsl(240, 3.7037%, 15.8824%);
+  --accent-foreground: hsl(0, 0%, 98.0392%);
+  --destructive: hsl(0, 62.7907%, 30.5882%);
+  --destructive-foreground: hsl(0, 0%, 98.0392%);
+  --border: hsl(240, 3.7037%, 15.8824%);
+  --input: hsl(240, 3.7037%, 15.8824%);
+  --ring: hsl(240, 4.7619%, 83.9216%);
+  --chart-1: hsl(220, 70%, 50%);
+  --chart-2: hsl(160, 60%, 45%);
+  --chart-3: hsl(30, 80%, 55%);
+  --chart-4: hsl(280, 65%, 60%);
+  --chart-5: hsl(340, 75%, 55%);
+  --sidebar: hsl(240, 5.2632%, 3.9216%);
+  --sidebar-foreground: hsl(240, 4.7619%, 83.9216%);
+  --sidebar-primary: hsl(224.2857, 76.3158%, 60%);
+  --sidebar-primary-foreground: hsl(0, 0%, 98.0392%);
+  --sidebar-accent: hsl(240, 3.7037%, 15.8824%);
+  --sidebar-accent-foreground: hsl(240, 4.7619%, 83.9216%);
+  --sidebar-border: hsl(240, 3.7037%, 15.8824%);
+  --sidebar-ring: hsl(217.2, 91.2%, 59.8%);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --radius: 0.75rem;
+  --shadow-2xs: 0px 1px 2px 0px hsl(0, 0%, 0%, 0.05);
+  --shadow-xs: 0px 1px 3px 0px hsl(0, 0%, 0%, 0.1), 0px 1px 2px 0px hsl(0, 0%, 0%, 0.06);
+  --shadow-sm: 0px 1px 3px 0px hsl(0, 0%, 0%, 0.1), 0px 1px 2px 0px hsl(0, 0%, 0%, 0.06);
+  --shadow: 0px 1px 3px 0px hsl(0, 0%, 0%, 0.1), 0px 1px 2px 0px hsl(0, 0%, 0%, 0.06);
+  --shadow-md: 0px 4px 6px -1px hsl(0, 0%, 0%, 0.1), 0px 2px 4px -1px hsl(0, 0%, 0%, 0.06);
+  --shadow-lg: 0px 10px 15px -3px hsl(0, 0%, 0%, 0.1), 0px 4px 6px -2px hsl(0, 0%, 0%, 0.05);
+  --shadow-xl: 0px 20px 25px -5px hsl(0, 0%, 0%, 0.1), 0px 10px 10px -5px hsl(0, 0%, 0%, 0.04);
+  --shadow-2xl: 0px 25px 50px -12px hsl(0, 0%, 0%, 0.25);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Mobile-first responsive design */
+  html {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  /* Ensure the app is mobile-first */
+  .mobile-container {
+    max-width: 28rem; /* 448px - mobile width */
+    margin: 0 auto;
+    min-height: 100vh;
+    background: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Custom scrollbar for mobile */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Focus styles for accessibility */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Safe area insets for mobile devices */
+  .safe-area-inset {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Touch-friendly button sizing */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Smooth transitions for mobile interactions */
+  button, 
+  .interactive {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Custom color utilities matching the design */
+  .text-neutral-50 { color: hsl(210, 40%, 98%); }
+  .text-neutral-100 { color: hsl(210, 40%, 96%); }
+  .text-neutral-200 { color: hsl(214, 32%, 91%); }
+  .text-neutral-300 { color: hsl(213, 27%, 84%); }
+  .text-neutral-400 { color: hsl(215, 20%, 65%); }
+  .text-neutral-500 { color: hsl(215, 16%, 47%); }
+  .text-neutral-600 { color: hsl(215, 19%, 35%); }
+  .text-neutral-700 { color: hsl(215, 25%, 27%); }
+  .text-neutral-800 { color: hsl(217, 33%, 17%); }
+  .text-neutral-900 { color: hsl(222, 84%, 5%); }
+
+  .bg-neutral-50 { background-color: hsl(210, 40%, 98%); }
+  .bg-neutral-100 { background-color: hsl(210, 40%, 96%); }
+  .bg-neutral-200 { background-color: hsl(214, 32%, 91%); }
+  .bg-neutral-300 { background-color: hsl(213, 27%, 84%); }
+  .bg-neutral-400 { background-color: hsl(215, 20%, 65%); }
+  .bg-neutral-500 { background-color: hsl(215, 16%, 47%); }
+  .bg-neutral-600 { background-color: hsl(215, 19%, 35%); }
+  .bg-neutral-700 { background-color: hsl(215, 25%, 27%); }
+  .bg-neutral-800 { background-color: hsl(217, 33%, 17%); }
+  .bg-neutral-900 { background-color: hsl(222, 84%, 5%); }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
