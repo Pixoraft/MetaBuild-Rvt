@@ -55,6 +55,7 @@ export default function Dev() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/dev-goal-logs'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/daily-performance'] });
       toast({ title: "Dev goal updated successfully!" });
     },
     onError: (error) => {

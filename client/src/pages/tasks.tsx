@@ -40,6 +40,7 @@ export default function Tasks() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/daily-performance'] });
       toast({ title: "Task updated successfully!" });
     },
     onError: (error) => {
@@ -58,6 +59,8 @@ export default function Tasks() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/water-intake'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/daily-performance'] });
+      toast({ title: "Water intake updated!" });
     },
     onError: (error) => {
       toast({ title: "Error updating water intake", variant: "destructive" });

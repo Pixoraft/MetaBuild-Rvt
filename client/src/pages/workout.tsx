@@ -83,6 +83,7 @@ export default function Workout() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/workout-logs'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/daily-performance'] });
       toast({ title: "Exercise updated successfully!" });
     },
     onError: (error) => {

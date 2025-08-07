@@ -53,6 +53,7 @@ export default function Mind() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/mind-exercise-logs'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/daily-performance'] });
       toast({ title: "Mind exercise updated successfully!" });
     },
     onError: (error) => {

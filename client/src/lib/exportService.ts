@@ -105,25 +105,25 @@ export async function fetchDayData(date: string): Promise<ExportData> {
     waterIntake,
     performance
   ] = await Promise.all([
-    userResponse.json(),
-    tasksResponse.json(),
-    workoutLogsResponse.json(),
-    workoutTypesResponse.json(),
-    exercisesResponse.json(),
-    mindExercisesResponse.json(),
-    mindExerciseLogsResponse.json(),
-    routinesResponse.json(),
-    routineLogsResponse.json(),
-    devGoalsResponse.json(),
-    devGoalLogsResponse.json(),
-    waterIntakeResponse.json(),
-    performanceResponse.json()
+    userResponse.ok ? userResponse.json() : null,
+    tasksResponse.ok ? tasksResponse.json() : [],
+    workoutLogsResponse.ok ? workoutLogsResponse.json() : [],
+    workoutTypesResponse.ok ? workoutTypesResponse.json() : [],
+    exercisesResponse.ok ? exercisesResponse.json() : [],
+    mindExercisesResponse.ok ? mindExercisesResponse.json() : [],
+    mindExerciseLogsResponse.ok ? mindExerciseLogsResponse.json() : [],
+    routinesResponse.ok ? routinesResponse.json() : [],
+    routineLogsResponse.ok ? routineLogsResponse.json() : [],
+    devGoalsResponse.ok ? devGoalsResponse.json() : [],
+    devGoalLogsResponse.ok ? devGoalLogsResponse.json() : [],
+    waterIntakeResponse.ok ? waterIntakeResponse.json() : { amount: 0, target: 3000 },
+    performanceResponse.ok ? performanceResponse.json() : { tasksScore: 0, workoutScore: 0, mindScore: 0, routineScore: 0, devScore: 0, overallScore: 0 }
   ]);
 
-  // Process workout data
-  const processedWorkouts = workoutLogs.map((log: any) => {
+  // Process workout data - Handle empty arrays safely
+  const processedWorkouts = (workoutLogs || []).map((log: any) => {
     // Find the exercise details
-    const exercise = exercises.find((ex: any) => ex.id === log.exerciseId);
+    const exercise = (exercises || []).find((ex: any) => ex.id === log.exerciseId);
     
     return {
       exerciseName: exercise?.name || 'Unknown Exercise',
@@ -133,9 +133,9 @@ export async function fetchDayData(date: string): Promise<ExportData> {
     };
   });
 
-  // Process mind exercise data
-  const processedMindExercises = mindExercises.map((exercise: any) => {
-    const log = mindExerciseLogs.find((log: any) => log.mindExerciseId === exercise.id);
+  // Process mind exercise data - Handle empty arrays safely
+  const processedMindExercises = (mindExercises || []).map((exercise: any) => {
+    const log = (mindExerciseLogs || []).find((log: any) => log.mindExerciseId === exercise.id);
     return {
       name: exercise.name,
       time: exercise.time,
@@ -145,9 +145,9 @@ export async function fetchDayData(date: string): Promise<ExportData> {
     };
   });
 
-  // Process routine data
-  const processedRoutines = routines.map((routine: any) => {
-    const log = routineLogs.find((log: any) => log.routineId === routine.id);
+  // Process routine data - Handle empty arrays safely
+  const processedRoutines = (routines || []).map((routine: any) => {
+    const log = (routineLogs || []).find((log: any) => log.routineId === routine.id);
     return {
       name: routine.name,
       type: routine.type,
@@ -157,9 +157,9 @@ export async function fetchDayData(date: string): Promise<ExportData> {
     };
   });
 
-  // Process dev goal data
-  const processedDevGoals = devGoals.map((goal: any) => {
-    const log = devGoalLogs.find((log: any) => log.devGoalId === goal.id);
+  // Process dev goal data - Handle empty arrays safely
+  const processedDevGoals = (devGoals || []).map((goal: any) => {
+    const log = (devGoalLogs || []).find((log: any) => log.devGoalId === goal.id);
     return {
       title: goal.title,
       type: goal.type,
@@ -180,7 +180,7 @@ export async function fetchDayData(date: string): Promise<ExportData> {
       currentStreak: user.currentStreak,
       bestStreak: user.bestStreak
     },
-    tasks: tasks.map((task: any) => ({
+    tasks: (tasks || []).map((task: any) => ({
       id: task.id,
       title: task.title,
       completed: task.completed,

@@ -17,21 +17,25 @@ export default function Dashboard() {
   const { data: todaysPerformance } = useQuery<any>({
     queryKey: ['/api/daily-performance', today],
     enabled: !!user,
+    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
   });
 
   const { data: waterIntake } = useQuery<any>({
     queryKey: ['/api/water-intake', today],
     enabled: !!user,
+    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
   });
 
   const { data: tasks } = useQuery<any[]>({
     queryKey: ['/api/tasks', today],
     enabled: !!user,
+    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
   });
 
   const { data: workoutLogs } = useQuery<any[]>({
     queryKey: ['/api/workout-logs', today],
     enabled: !!user,
+    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
   });
 
   const performanceData = [

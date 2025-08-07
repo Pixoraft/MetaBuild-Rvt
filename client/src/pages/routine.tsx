@@ -30,9 +30,17 @@ export default function Routine() {
 
   const morningRoutines = routines.filter(r => r.type === 'morning');
   const nightRoutines = routines.filter(r => r.type === 'night');
-  // For weekly routines, show only today's relevant ones
+  // For weekly routines, show only today's relevant ones based on day of week
+  const dayOfWeek = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
   const weeklyRoutines = routines.filter(r => r.type === 'weekly');
-  const todaysWeeklyRoutines = weeklyRoutines; // Show all for now, but user can check only today's
+  const todaysWeeklyRoutines = weeklyRoutines.filter(r => {
+    // If routine has a specific day assignment, check it matches today
+    if (r.dayOfWeek !== undefined && r.dayOfWeek !== null) {
+      return r.dayOfWeek === dayOfWeek;
+    }
+    // Otherwise show all weekly routines for flexibility
+    return true;
+  });
 
   // Calculate progress for all routine types
   const completedMorning = routineLogs.filter(log => {
@@ -76,6 +84,7 @@ export default function Routine() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/routine-logs'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/daily-performance'] });
       toast({ title: "Routine updated successfully!" });
     },
     onError: (error) => {

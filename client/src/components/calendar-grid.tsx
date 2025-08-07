@@ -20,7 +20,7 @@ export function CalendarGrid({ currentDate }: CalendarGridProps) {
   
   const calendarDays = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
 
-  // Get performance data for the month (this would need to be implemented in the API)
+  // Get performance data for the month with real-time updates
   const { data: monthlyPerformance = [] } = useQuery<any[]>({
     queryKey: ['/api/daily-performance/range', format(monthStart, 'yyyy-MM-dd'), format(monthEnd, 'yyyy-MM-dd')],
     queryFn: async () => {
@@ -30,6 +30,7 @@ export function CalendarGrid({ currentDate }: CalendarGridProps) {
       return response.json();
     },
     enabled: !!user,
+    refetchInterval: 10000, // Refresh every 10 seconds for calendar updates
   });
 
   const getPerformanceColor = (day: Date) => {

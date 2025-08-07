@@ -9,6 +9,7 @@ import {
   integer,
   boolean,
   date,
+  unique,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -149,7 +150,9 @@ export const waterIntake = pgTable("water_intake", {
   target: integer("target").default(3000), // in ml
   date: date("date").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  uniqueUserDate: unique("unique_user_date").on(table.userId, table.date),
+}));
 
 export const dailyPerformance = pgTable("daily_performance", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -162,7 +165,9 @@ export const dailyPerformance = pgTable("daily_performance", {
   devScore: integer("dev_score").default(0), // 0-100
   overallScore: integer("overall_score").default(0), // 0-100
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  uniqueUserDate: unique("unique_performance_user_date").on(table.userId, table.date),
+}));
 
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({ createdAt: true, updatedAt: true });
