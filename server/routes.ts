@@ -53,11 +53,13 @@ async function calculateAndUpdateDailyPerformance(userId: string, date: string) 
     );
     const routineScore = todaysRoutines.length > 0 ? Math.round((completedRoutines / todaysRoutines.length) * 100) : 0;
 
-    const completedDev = devGoalLogs.filter(d => d.completed).length;
     const allDevGoals = await storage.getDevGoals(userId);
     // Only count daily development goals for today's performance
     const dailyDevGoals = allDevGoals.filter(g => g.type === 'daily');
-    const devScore = dailyDevGoals.length > 0 ? Math.round((completedDev / dailyDevGoals.length) * 100) : 0;
+    const dailyDevGoalIds = new Set(dailyDevGoals.map(g => g.id));
+    // Only count completed logs for daily dev goals
+    const completedDailyDev = devGoalLogs.filter(d => d.completed && dailyDevGoalIds.has(d.devGoalId)).length;
+    const devScore = dailyDevGoals.length > 0 ? Math.round((completedDailyDev / dailyDevGoals.length) * 100) : 0;
 
     // Calculate overall score - only count categories with actual activity
     const scores = [tasksScore, workoutScore, mindScore, routineScore, devScore];
