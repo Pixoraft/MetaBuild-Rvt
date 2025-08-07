@@ -30,7 +30,8 @@ export function CalendarGrid({ currentDate }: CalendarGridProps) {
       return response.json();
     },
     enabled: !!user,
-    refetchInterval: 10000, // Refresh every 10 seconds for calendar updates
+    refetchInterval: 3000, // Refresh every 3 seconds for faster calendar updates
+    staleTime: 0, // Always consider data stale to force refetch
   });
 
   const getPerformanceColor = (day: Date) => {

@@ -559,6 +559,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = FIXED_USER_ID;
       const { startDate, endDate } = req.params;
+      const today = format(new Date(), 'yyyy-MM-dd');
       
       // Ensure we have performance data by calculating for any missing days
       const start = new Date(startDate);
@@ -569,10 +570,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const dateStr = format(d, 'yyyy-MM-dd');
         dates.push(dateStr);
         
-        // Check if performance data exists, if not calculate it
-        const existing = await storage.getDailyPerformance(userId, dateStr);
-        if (!existing) {
+        // Always recalculate today's performance to get latest data
+        if (dateStr === today) {
           await calculateAndUpdateDailyPerformance(userId, dateStr);
+        } else {
+          // Check if performance data exists for other days, if not calculate it
+          const existing = await storage.getDailyPerformance(userId, dateStr);
+          if (!existing) {
+            await calculateAndUpdateDailyPerformance(userId, dateStr);
+          }
         }
       }
       
