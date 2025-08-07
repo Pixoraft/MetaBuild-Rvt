@@ -36,23 +36,24 @@ async function calculateAndUpdateDailyPerformance(userId: string, date: string) 
     const tasksScore = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
 
     const completedWorkouts = workoutLogs.filter(w => w.completed).length;
-    const workoutScore = workoutLogs.length > 0 ? Math.round((completedWorkouts / workoutLogs.length) * 100) : 100; // Default to 100 if no workouts
+    const workoutScore = workoutLogs.length > 0 ? Math.round((completedWorkouts / workoutLogs.length) * 100) : 0;
 
     const completedMind = mindLogs.filter(m => m.completed).length;
     const mindExercises = await storage.getMindExercises(userId);
-    const mindScore = mindExercises.length > 0 ? Math.round((completedMind / mindExercises.length) * 100) : 100;
+    const mindScore = mindExercises.length > 0 ? Math.round((completedMind / mindExercises.length) * 100) : 0;
 
     const completedRoutines = routineLogs.filter(r => r.completed).length;
     const routines = await storage.getRoutines(userId);
-    const routineScore = routines.length > 0 ? Math.round((completedRoutines / routines.length) * 100) : 100;
+    const routineScore = routines.length > 0 ? Math.round((completedRoutines / routines.length) * 100) : 0;
 
     const completedDev = devGoalLogs.filter(d => d.completed).length;
     const devGoals = await storage.getDevGoals(userId);
-    const devScore = devGoals.length > 0 ? Math.round((completedDev / devGoals.length) * 100) : 100;
+    const devScore = devGoals.length > 0 ? Math.round((completedDev / devGoals.length) * 100) : 0;
 
-    // Calculate overall score
+    // Calculate overall score - only count categories with actual activity
     const scores = [tasksScore, workoutScore, mindScore, routineScore, devScore];
-    const overallScore = Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length);
+    const hasAnyActivity = tasks.length > 0 || workoutLogs.length > 0 || mindLogs.length > 0 || routineLogs.length > 0 || devGoalLogs.length > 0;
+    const overallScore = hasAnyActivity ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
 
     // Update daily performance
     await storage.upsertDailyPerformance({

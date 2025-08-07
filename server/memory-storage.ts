@@ -48,6 +48,11 @@ export class MemoryStorage implements IStorage {
   private waterIntake: Map<string, WaterIntake> = new Map();
   private dailyPerformance: Map<string, DailyPerformance> = new Map();
 
+  // Clear all performance data to force recalculation with new logic
+  clearPerformanceData() {
+    this.dailyPerformance.clear();
+  }
+
   // User operations
   async getUser(id: string): Promise<User | undefined> {
     return this.users.get(id);

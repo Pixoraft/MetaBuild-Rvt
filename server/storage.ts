@@ -77,6 +77,7 @@ export interface IStorage {
   getDailyPerformance(userId: string, date: string): Promise<DailyPerformance | undefined>;
   upsertDailyPerformance(performance: InsertDailyPerformance): Promise<DailyPerformance>;
   getDailyPerformanceRange(userId: string, startDate: string, endDate: string): Promise<DailyPerformance[]>;
+  clearPerformanceData(): void;
 }
 
 export const storage = new MemoryStorage();
