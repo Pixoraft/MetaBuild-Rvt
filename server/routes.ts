@@ -84,6 +84,20 @@ async function calculateAndUpdateDailyPerformance(userId: string, date: string) 
           bestStreak: newBestStreak
         });
       }
+    } else {
+      // Reset streak if below 80%
+      const user = await storage.getUser(userId);
+      if (user && (user.currentStreak || 0) > 0) {
+        await storage.upsertUser({
+          id: userId,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profileImageUrl: user.profileImageUrl,
+          currentStreak: 0,
+          bestStreak: user.bestStreak || 0
+        });
+      }
     }
 
     return { tasksScore, workoutScore, mindScore, routineScore, devScore, overallScore };
@@ -515,8 +529,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = FIXED_USER_ID;
       const date = req.query.date || format(new Date(), 'yyyy-MM-dd');
-      const performance = await storage.getDailyPerformance(userId, date as string);
-      res.json(performance);
+      let performance = await storage.getDailyPerformance(userId, date as string);
+      
+      // If no performance data exists, calculate and create it
+      if (!performance) {
+        await calculateAndUpdateDailyPerformance(userId, date as string);
+        performance = await storage.getDailyPerformance(userId, date as string);
+      }
+      
+      res.json(performance || { tasksScore: 0, workoutScore: 0, mindScore: 0, routineScore: 0, devScore: 0, overallScore: 0 });
     } catch (error) {
       console.error("Error fetching daily performance:", error);
       res.status(500).json({ message: "Failed to fetch daily performance" });
