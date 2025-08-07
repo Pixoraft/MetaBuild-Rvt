@@ -18,6 +18,81 @@ import {
 import { preloadUserData } from "../client/src/lib/preload-data";
 import { format } from "date-fns";
 
+// Helper function to calculate daily performance and update streaks
+async function calculateAndUpdateDailyPerformance(userId: string, date: string) {
+  try {
+    // Get all data for the day
+    const [tasks, workoutLogs, mindLogs, routineLogs, devGoalLogs, waterIntake] = await Promise.all([
+      storage.getTasks(userId, date),
+      storage.getWorkoutLogs(userId, date),
+      storage.getMindExerciseLogs(userId, date),
+      storage.getRoutineLogs(userId, date),
+      storage.getDevGoalLogs(userId, date),
+      storage.getWaterIntake(userId, date)
+    ]);
+
+    // Calculate scores (0-100)
+    const completedTasks = tasks.filter(t => t.completed).length;
+    const tasksScore = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
+
+    const completedWorkouts = workoutLogs.filter(w => w.completed).length;
+    const workoutScore = workoutLogs.length > 0 ? Math.round((completedWorkouts / workoutLogs.length) * 100) : 100; // Default to 100 if no workouts
+
+    const completedMind = mindLogs.filter(m => m.completed).length;
+    const mindExercises = await storage.getMindExercises(userId);
+    const mindScore = mindExercises.length > 0 ? Math.round((completedMind / mindExercises.length) * 100) : 100;
+
+    const completedRoutines = routineLogs.filter(r => r.completed).length;
+    const routines = await storage.getRoutines(userId);
+    const routineScore = routines.length > 0 ? Math.round((completedRoutines / routines.length) * 100) : 100;
+
+    const completedDev = devGoalLogs.filter(d => d.completed).length;
+    const devGoals = await storage.getDevGoals(userId);
+    const devScore = devGoals.length > 0 ? Math.round((completedDev / devGoals.length) * 100) : 100;
+
+    // Calculate overall score
+    const scores = [tasksScore, workoutScore, mindScore, routineScore, devScore];
+    const overallScore = Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length);
+
+    // Update daily performance
+    await storage.upsertDailyPerformance({
+      userId,
+      date,
+      tasksScore,
+      workoutScore,
+      mindScore,
+      routineScore,
+      devScore,
+      overallScore
+    });
+
+    // Update streak if overall score >= 80%
+    if (overallScore >= 80) {
+      const user = await storage.getUser(userId);
+      if (user) {
+        const currentStreak = user.currentStreak || 0;
+        const bestStreak = user.bestStreak || 0;
+        const newStreak = currentStreak + 1;
+        const newBestStreak = Math.max(newStreak, bestStreak);
+        await storage.upsertUser({
+          id: userId,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profileImageUrl: user.profileImageUrl,
+          currentStreak: newStreak,
+          bestStreak: newBestStreak
+        });
+      }
+    }
+
+    return { tasksScore, workoutScore, mindScore, routineScore, devScore, overallScore };
+  } catch (error) {
+    console.error("Error calculating daily performance:", error);
+    return null;
+  }
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   const FIXED_USER_ID = "user-1"; // Single user ID since no auth needed
 
@@ -73,6 +148,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = FIXED_USER_ID;
       const taskData = insertTaskSchema.parse({ ...req.body, userId });
       const task = await storage.createTask(taskData);
+      // Update daily performance
+      await calculateAndUpdateDailyPerformance(userId, taskData.date);
       res.json(task);
     } catch (error) {
       console.error("Error creating task:", error);
@@ -92,6 +169,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
       }
+      // Update daily performance
+      await calculateAndUpdateDailyPerformance(FIXED_USER_ID, task.date);
       res.json(task);
     } catch (error) {
       console.error("Error updating task:", error);
@@ -182,6 +261,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       const logData = insertWorkoutLogSchema.parse(bodyData);
       const log = await storage.createWorkoutLog(logData);
+      // Update daily performance
+      await calculateAndUpdateDailyPerformance(userId, logData.date);
       res.json(log);
     } catch (error) {
       console.error("Error creating workout log:", error);
@@ -201,6 +282,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!log) {
         return res.status(404).json({ message: "Workout log not found" });
       }
+      // Update daily performance
+      await calculateAndUpdateDailyPerformance(FIXED_USER_ID, log.date);
       res.json(log);
     } catch (error) {
       console.error("Error updating workout log:", error);
@@ -242,6 +325,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       const logData = insertMindExerciseLogSchema.parse(bodyData);
       const log = await storage.createMindExerciseLog(logData);
+      // Update daily performance
+      await calculateAndUpdateDailyPerformance(userId, logData.date);
       res.json(log);
     } catch (error) {
       console.error("Error creating mind exercise log:", error);
@@ -261,6 +346,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!log) {
         return res.status(404).json({ message: "Mind exercise log not found" });
       }
+      // Update daily performance
+      await calculateAndUpdateDailyPerformance(FIXED_USER_ID, log.date);
       res.json(log);
     } catch (error) {
       console.error("Error updating mind exercise log:", error);
@@ -302,6 +389,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       const logData = insertRoutineLogSchema.parse(bodyData);
       const log = await storage.createRoutineLog(logData);
+      // Update daily performance
+      await calculateAndUpdateDailyPerformance(userId, logData.date);
       res.json(log);
     } catch (error) {
       console.error("Error creating routine log:", error);
@@ -321,6 +410,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!log) {
         return res.status(404).json({ message: "Routine log not found" });
       }
+      // Update daily performance
+      await calculateAndUpdateDailyPerformance(FIXED_USER_ID, log.date);
       res.json(log);
     } catch (error) {
       console.error("Error updating routine log:", error);
@@ -362,6 +453,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       const logData = insertDevGoalLogSchema.parse(bodyData);
       const log = await storage.createDevGoalLog(logData);
+      // Update daily performance
+      await calculateAndUpdateDailyPerformance(userId, logData.date);
       res.json(log);
     } catch (error) {
       console.error("Error creating dev goal log:", error);
@@ -381,6 +474,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!log) {
         return res.status(404).json({ message: "Dev goal log not found" });
       }
+      // Update daily performance
+      await calculateAndUpdateDailyPerformance(FIXED_USER_ID, log.date);
       res.json(log);
     } catch (error) {
       console.error("Error updating dev goal log:", error);
@@ -406,6 +501,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = FIXED_USER_ID;
       const intakeData = insertWaterIntakeSchema.parse({ ...req.body, userId });
       const intake = await storage.upsertWaterIntake(intakeData);
+      // Update daily performance
+      await calculateAndUpdateDailyPerformance(userId, intakeData.date);
       res.json(intake);
     } catch (error) {
       console.error("Error updating water intake:", error);
