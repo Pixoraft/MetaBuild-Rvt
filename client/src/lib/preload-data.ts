@@ -1,49 +1,19 @@
 import { storage } from "../../../server/storage";
 
 export async function preloadUserData(userId: string) {
-  // Preload workout types and exercises based on the 7-day split
+  // Preload workout types - Two weekly plans
   const workoutTypes = [
     {
       userId,
-      name: "Push (Chest/Shoulders/Triceps/Abs)",
-      isWeekly: true,
-      maxTime: 45,
-    },
-    {
-      userId,
-      name: "Pull (Back/Biceps/Forearms/Grip)",
-      isWeekly: true,
-      maxTime: 45,
-    },
-    {
-      userId,
-      name: "Legs (Quads/Glutes/Calves)",
-      isWeekly: true,
-      maxTime: 45,
-    },
-    {
-      userId,
-      name: "Core & Abs (Six-Pack/Obliques/Stability)",
+      name: "30-Day Gripper & Forearm Vein Plan (Arm Workout Weekly)",
       isWeekly: true,
       maxTime: 30,
     },
     {
       userId,
-      name: "Power/Explosive/Grip & Veins",
+      name: "Smart & Balanced 7-Day Full Body Workout Weekly",
       isWeekly: true,
-      maxTime: 35,
-    },
-    {
-      userId,
-      name: "BONUS Stretch & Pump Day (Light/Recovery)",
-      isWeekly: true,
-      maxTime: 35,
-    },
-    {
-      userId,
-      name: "Rest Day (Optional Light Recovery)",
-      isWeekly: true,
-      maxTime: 15,
+      maxTime: 45,
     },
   ];
 
@@ -55,92 +25,168 @@ export async function preloadUserData(userId: string) {
   );
 
   // Preload exercises for each workout type
-  const exercisesByDay = [
-    // Day 1 - Push
+  const exercisesByPlan = [
+    // Plan 1: 30-Day Gripper & Forearm Vein Plan
     [
-      { name: "Normal Push-Ups", sets: 4, reps: 25 },
-      { name: "Incline Push-Ups", sets: 3, reps: 25 },
-      { name: "Pike Push-Ups", sets: 3, reps: 15 },
-      { name: "Diamond Push-Ups", sets: 2, reps: 15 },
-      { name: "Bench Dips", sets: 3, reps: 25 },
-      { name: "Russian Twists", sets: 3, reps: 30 },
-      { name: "Plank", duration: "5 min" },
+      // Day 0 - Sunday (Rest Day)
+      [
+        { name: "Hot/cold water contrast", duration: "5 min" },
+        { name: "Stretch forearms, fingers, wrists", duration: "3 min" },
+        { name: "Gentle hand circles", sets: 2, reps: 20 },
+        { name: "Light towel twist (optional)", duration: "1 min" },
+      ],
+      // Day 1 - Monday (High-Volume Gripper)
+      [
+        { name: "Gripper Fast Reps", sets: 4, reps: 50 },
+        { name: "Slow Squeeze Gripper", sets: 3, reps: 15 },
+        { name: "Towel Twist (dry towel full power)", sets: 2, duration: "1 min" },
+        { name: "Wrist Rotations (with bottle)", sets: 2, reps: 15 },
+        { name: "Shake & Stretch", duration: "2 min" },
+      ],
+      // Day 2 - Tuesday (Strength + Isometrics)
+      [
+        { name: "Heavy Gripper (tight squeeze)", sets: 3, reps: 10 },
+        { name: "Gripper Close-Hold", sets: 3, duration: "30 sec" },
+        { name: "Pinch Grip Hold (book/brick)", sets: 3, duration: "30 sec" },
+        { name: "Wrist Curl (bottle/brick)", sets: 3, reps: 15 },
+        { name: "Reverse Curl", sets: 3, reps: 15 },
+        { name: "Finger Wall Pushups", sets: 2, duration: "20 sec" },
+        { name: "Stretch & Shake", duration: "2 min" },
+      ],
+      // Day 3 - Wednesday (Recovery + Light Pump)
+      [
+        { name: "Easy Gripper", sets: 2, reps: 30 },
+        { name: "Towel Squeeze (light)", sets: 1, duration: "1 min" },
+        { name: "Wrist Mobility Circles", duration: "2 min" },
+        { name: "Finger Flex-Extend", sets: 1, reps: 50 },
+        { name: "Salt water soak (hot)", duration: "5 min" },
+        { name: "Forearm massage (optional)", duration: "3 min" },
+      ],
+      // Day 4 - Thursday (Mixed Monster Circuit)
+      [
+        { name: "Gripper Explosives", sets: 3, reps: 20 },
+        { name: "Gripper Slow Hold", sets: 3, reps: 15 },
+        { name: "Wrist Curl", sets: 3, reps: 15 },
+        { name: "Reverse Curl", sets: 3, reps: 15 },
+        { name: "Pinch Grip", sets: 3, duration: "30 sec" },
+        { name: "Farmer Carry (bucket or bag)", sets: 3, duration: "1 min" },
+        { name: "Towel Twists", sets: 2, duration: "1 min" },
+        { name: "Shake + Stretch", duration: "2 min" },
+      ],
+      // Day 5 - Friday (Reverse Focus)
+      [
+        { name: "Rubber Band Finger Opens", sets: 3, reps: 20 },
+        { name: "Wall Finger Push", sets: 3, reps: 15 },
+        { name: "Reverse Wrist Curl", sets: 3, reps: 20 },
+        { name: "Forearm Extensor Stretch", duration: "1 min each arm" },
+        { name: "Light Gripper", sets: 2, reps: 20 },
+        { name: "Shake out + hot water dip", duration: "3 min" },
+      ],
+      // Day 6 - Saturday (Max Test & Burnout)
+      [
+        { name: "Gripper Max Reps (record reps)", sets: 1, reps: 999 },
+        { name: "Close & Hold", sets: 1, duration: "45 sec" },
+        { name: "Farmer's Hold", sets: 1, duration: "1 min" },
+        { name: "Pinch Hold", sets: 1, duration: "45 sec" },
+        { name: "Bucket Walk", sets: 2, reps: 10 },
+        { name: "Gripper to failure", sets: 1, reps: 999 },
+        { name: "Finger pulse to failure", sets: 1, reps: 999 },
+      ],
     ],
-    // Day 2 - Pull
+    // Plan 2: Smart & Balanced 7-Day Full Body Workout
     [
-      { name: "Pull-Ups / Assisted", sets: 4, reps: 12 },
-      { name: "Towel Rows", sets: 3, reps: 20 },
-      { name: "Towel Bicep Curls", sets: 3, reps: 20 },
-      { name: "Reverse Curls", sets: 3, reps: 15 },
-      { name: "Gripper Fast", sets: 3, reps: 40 },
-      { name: "Farmer Hold", duration: "2×45 sec" },
-      { name: "Wrist Rolls", sets: 2, reps: 20 },
-    ],
-    // Day 3 - Legs
-    [
-      { name: "Squats", sets: 4, reps: 25 },
-      { name: "Jump Squats", sets: 3, reps: 20 },
-      { name: "Lunges", sets: 3, reps: 20 },
-      { name: "Calf Raises", sets: 4, reps: 30 },
-      { name: "Wall Sit", duration: "2×45 sec" },
-      { name: "Broad Jumps", sets: 2, reps: 15 },
-      { name: "High Knees", sets: 2, reps: 30 },
-    ],
-    // Day 4 - Core & Abs
-    [
-      { name: "Crunches", sets: 3, reps: 25 },
-      { name: "Leg Raises", sets: 3, reps: 25 },
-      { name: "Mountain Climbers", sets: 3, reps: 30 },
-      { name: "Plank", sets: 3, duration: "1 min" },
-      { name: "Side Plank", sets: 2, duration: "1 min each" },
-      { name: "V-Ups", sets: 3, reps: 20 },
-      { name: "Russian Twists", sets: 3, reps: 30 },
-    ],
-    // Day 5 - Power/Explosive
-    [
-      { name: "Clap Pushups", sets: 3, reps: 15 },
-      { name: "Skipping", duration: "5 min" },
-      { name: "High Knees", sets: 3, reps: 30 },
-      { name: "Towel Bicep Curls", sets: 2, reps: 25 },
-      { name: "Wrist Rolls", sets: 2, reps: 20 },
-      { name: "Gripper Slow Squeeze", sets: 2, reps: 15 },
-      { name: "Hanging", sets: 3, duration: "1 min" },
-    ],
-    // Day 6 - Stretch & Pump
-    [
-      { name: "Archer Pushups", sets: 2, reps: 12 },
-      { name: "Incline Pushups", sets: 2, reps: 20 },
-      { name: "Squats", sets: 2, reps: 25 },
-      { name: "Plank", sets: 2, duration: "1 min" },
-      { name: "Neck + Spine + Toe Touch Stretch", sets: 3, duration: "30 sec" },
-      { name: "Hanging", sets: 2, duration: "1 min" },
-    ],
-    // Day 7 - Rest
-    [
-      { name: "Hanging", sets: 1, duration: "1 min" },
-      { name: "Cobra Stretch", sets: 2, duration: "30 sec" },
-      { name: "Light walk", duration: "10 min" },
+      // Day 0 - Sunday (Rest Day)
+      [
+        { name: "Hanging", sets: 1, duration: "1 min" },
+        { name: "Cobra Stretch", sets: 2, duration: "30 sec" },
+        { name: "Light walk", duration: "10 min" },
+        { name: "Water, ORS, and protein shake", duration: "optional" },
+      ],
+      // Day 1 - Monday (Push)
+      [
+        { name: "Normal Push-Ups", sets: 4, reps: 25 },
+        { name: "Incline Push-Ups", sets: 3, reps: 25 },
+        { name: "Pike Push-Ups", sets: 3, reps: 15 },
+        { name: "Diamond Push-Ups", sets: 2, reps: 15 },
+        { name: "Bench Dips", sets: 3, reps: 25 },
+        { name: "Russian Twists", sets: 3, reps: 30 },
+        { name: "Plank", duration: "5 min" },
+      ],
+      // Day 2 - Tuesday (Pull)
+      [
+        { name: "Pull-Ups / Assisted", sets: 4, reps: 12 },
+        { name: "Towel Rows", sets: 3, reps: 20 },
+        { name: "Towel Bicep Curls", sets: 3, reps: 20 },
+        { name: "Reverse Curls", sets: 3, reps: 15 },
+        { name: "Gripper Fast", sets: 3, reps: 40 },
+        { name: "Farmer Hold", sets: 2, duration: "45 sec" },
+        { name: "Wrist Rolls", sets: 2, reps: 20 },
+      ],
+      // Day 3 - Wednesday (Legs)
+      [
+        { name: "Squats", sets: 4, reps: 25 },
+        { name: "Jump Squats", sets: 3, reps: 20 },
+        { name: "Lunges", sets: 3, reps: 20 },
+        { name: "Calf Raises", sets: 4, reps: 30 },
+        { name: "Wall Sit", sets: 2, duration: "45 sec" },
+        { name: "Broad Jumps", sets: 2, reps: 15 },
+        { name: "High Knees", sets: 2, reps: 30 },
+      ],
+      // Day 4 - Thursday (Core + Abs)
+      [
+        { name: "Crunches", sets: 3, reps: 25 },
+        { name: "Leg Raises", sets: 3, reps: 25 },
+        { name: "Mountain Climbers", sets: 3, reps: 30 },
+        { name: "Plank", sets: 3, duration: "1 min" },
+        { name: "Side Plank", sets: 2, duration: "1 min each" },
+        { name: "V-Ups", sets: 3, reps: 20 },
+        { name: "Russian Twists", sets: 3, reps: 30 },
+      ],
+      // Day 5 - Friday (Power + Explosive + Grip Veins)
+      [
+        { name: "Clap Pushups", sets: 3, reps: 15 },
+        { name: "Skipping", duration: "5 min" },
+        { name: "High Knees", sets: 3, reps: 30 },
+        { name: "Towel Bicep Curls", sets: 2, reps: 25 },
+        { name: "Wrist Rolls", sets: 2, reps: 20 },
+        { name: "Gripper Slow Squeeze", sets: 2, reps: 15 },
+        { name: "Hanging", sets: 3, duration: "1 min" },
+      ],
+      // Day 6 - Saturday (BONUS Stretch + Pump Day)
+      [
+        { name: "Archer Pushups", sets: 2, reps: 12 },
+        { name: "Incline Pushups", sets: 2, reps: 20 },
+        { name: "Squats", sets: 2, reps: 25 },
+        { name: "Plank", sets: 2, duration: "1 min" },
+        { name: "Neck + Spine + Toe Touch Stretch", sets: 3, duration: "30 sec" },
+        { name: "Hanging", sets: 2, duration: "1 min" },
+      ],
     ],
   ];
 
   // Create exercises for each workout type
-  for (let i = 0; i < createdWorkoutTypes.length; i++) {
-    const workoutType = createdWorkoutTypes[i];
-    const exercises = exercisesByDay[i];
+  for (let planIndex = 0; planIndex < createdWorkoutTypes.length; planIndex++) {
+    const workoutType = createdWorkoutTypes[planIndex];
+    const exercisesByDay = exercisesByPlan[planIndex];
 
-    await Promise.all(
-      exercises.map(async (exercise, index) => {
-        return await storage.createExercise({
-          workoutTypeId: workoutType.id,
-          name: exercise.name,
-          sets: exercise.sets || null,
-          reps: exercise.reps || null,
-          duration: exercise.duration || null,
-          dayOfWeek: i, // 0 = Sunday (Rest), 1 = Monday (Push), etc.
-          orderIndex: index,
-        });
-      })
-    );
+    // Create exercises for each day of the week (0-6)
+    for (let dayIndex = 0; dayIndex < exercisesByDay.length; dayIndex++) {
+      const exercises = exercisesByDay[dayIndex];
+      
+      await Promise.all(
+        exercises.map(async (exercise, exerciseIndex) => {
+          return await storage.createExercise({
+            workoutTypeId: workoutType.id,
+            name: exercise.name,
+            sets: exercise.sets || null,
+            reps: exercise.reps || null,
+            duration: exercise.duration || null,
+            dayOfWeek: dayIndex, // 0 = Sunday, 1 = Monday, etc.
+            orderIndex: exerciseIndex,
+          });
+        })
+      );
+    }
   }
 
   // Preload mind exercises

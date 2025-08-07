@@ -271,7 +271,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/routine-logs', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;
-      const logData = insertRoutineLogSchema.parse({ ...req.body, userId });
+      const bodyData = { ...req.body, userId };
+      // Convert ISO string to Date if needed
+      if (bodyData.completedAt && typeof bodyData.completedAt === 'string') {
+        bodyData.completedAt = new Date(bodyData.completedAt);
+      }
+      const logData = insertRoutineLogSchema.parse(bodyData);
       const log = await storage.createRoutineLog(logData);
       res.json(log);
     } catch (error) {
@@ -284,6 +289,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const updates = req.body;
+      // Convert ISO string to Date if needed
+      if (updates.completedAt && typeof updates.completedAt === 'string') {
+        updates.completedAt = new Date(updates.completedAt);
+      }
       const log = await storage.updateRoutineLog(id, updates);
       if (!log) {
         return res.status(404).json({ message: "Routine log not found" });
@@ -322,7 +331,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/dev-goal-logs', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;
-      const logData = insertDevGoalLogSchema.parse({ ...req.body, userId });
+      const bodyData = { ...req.body, userId };
+      // Convert ISO string to Date if needed
+      if (bodyData.completedAt && typeof bodyData.completedAt === 'string') {
+        bodyData.completedAt = new Date(bodyData.completedAt);
+      }
+      const logData = insertDevGoalLogSchema.parse(bodyData);
       const log = await storage.createDevGoalLog(logData);
       res.json(log);
     } catch (error) {
@@ -335,6 +349,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const updates = req.body;
+      // Convert ISO string to Date if needed
+      if (updates.completedAt && typeof updates.completedAt === 'string') {
+        updates.completedAt = new Date(updates.completedAt);
+      }
       const log = await storage.updateDevGoalLog(id, updates);
       if (!log) {
         return res.status(404).json({ message: "Dev goal log not found" });
