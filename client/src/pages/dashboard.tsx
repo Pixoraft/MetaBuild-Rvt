@@ -5,7 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CalendarGrid } from "@/components/calendar-grid";
-import { ChevronLeft, ChevronRight, Flame, Trophy } from "lucide-react";
+import { ExportModal } from "@/components/export-modal";
+import { ChevronLeft, ChevronRight, Flame, Trophy, Download } from "lucide-react";
 import { useState } from "react";
 
 export default function Dashboard() {
@@ -63,6 +64,11 @@ export default function Dashboard() {
             <h1 className="text-lg font-semibold text-gray-800">Dashboard</h1>
           </div>
           <div className="flex items-center space-x-2">
+            <ExportModal>
+              <Button variant="ghost" size="sm" className="h-8 px-2">
+                <Download className="w-4 h-4" />
+              </Button>
+            </ExportModal>
             <div className="bg-green-100 px-3 py-1 rounded-full">
               <span className="text-xs font-medium text-green-600">
                 {user?.currentStreak || 0}🔥

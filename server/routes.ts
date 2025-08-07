@@ -136,6 +136,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all exercises for export
+  app.get('/api/exercises/all', async (req: any, res) => {
+    try {
+      const userId = FIXED_USER_ID;
+      const workoutTypes = await storage.getWorkoutTypes(userId);
+      const allExercises: any[] = [];
+      
+      for (const workoutType of workoutTypes) {
+        const exercises = await storage.getExercises(workoutType.id);
+        exercises.forEach(exercise => {
+          allExercises.push({
+            ...exercise,
+            workoutTypeName: workoutType.name
+          });
+        });
+      }
+      
+      res.json(allExercises);
+    } catch (error) {
+      console.error("Error fetching all exercises:", error);
+      res.status(500).json({ message: "Failed to fetch all exercises" });
+    }
+  });
+
   app.get('/api/workout-logs', async (req: any, res) => {
     try {
       const userId = FIXED_USER_ID;

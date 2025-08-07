@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProgressCircle } from "@/components/progress-circle";
-import { MoreVertical, Moon } from "lucide-react";
+import { ExportModal } from "@/components/export-modal";
+import { MoreVertical, Moon, Download } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -143,6 +144,11 @@ export default function Routine() {
             <h1 className="text-lg font-semibold text-gray-800">Daily Routine</h1>
           </div>
           <div className="flex items-center space-x-2">
+            <ExportModal>
+              <Button variant="ghost" size="sm" className="h-8 px-2">
+                <Download className="w-4 h-4" />
+              </Button>
+            </ExportModal>
             <div className="bg-green-100 px-3 py-1 rounded-full">
               <span className="text-xs font-medium text-green-600">
                 {user?.currentStreak || 0}🔥
@@ -198,7 +204,7 @@ export default function Routine() {
             </TabsContent>
             
             <TabsContent value="weekly" className="mt-4">
-              <RoutineList routines={todaysWeeklyRoutines} title="Today's Weekly Tasks" />
+              <RoutineList routines={weeklyRoutines.filter(() => true)} title="Today's Weekly Tasks" />
             </TabsContent>
           </Tabs>
         </section>

@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Code, Clock, CheckCircle } from "lucide-react";
+import { ExportModal } from "@/components/export-modal";
+import { Code, Clock, CheckCircle, Download } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -101,6 +102,11 @@ export default function Dev() {
             <h1 className="text-lg font-semibold text-gray-800">Dev Progress</h1>
           </div>
           <div className="flex items-center space-x-2">
+            <ExportModal>
+              <Button variant="ghost" size="sm" className="h-8 px-2">
+                <Download className="w-4 h-4" />
+              </Button>
+            </ExportModal>
             <div className="bg-green-100 px-3 py-1 rounded-full">
               <span className="text-xs font-medium text-green-600">
                 {user?.currentStreak || 0}🔥
@@ -114,6 +120,43 @@ export default function Dev() {
       </header>
 
       <main>
+        {/* Daily Dev Routine - Moved to Top */}
+        <section className="p-4">
+          <h3 className="text-md font-semibold text-gray-800 mb-4">Today's Dev Tasks</h3>
+          
+          <div className="space-y-3 mb-6">
+            {dailyGoals.map((goal) => {
+              const log = devLogs.find(log => log.devGoalId === goal.id);
+              const isCompleted = log?.completed || false;
+              
+              return (
+                <Card key={goal.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-3">
+                      <Checkbox
+                        checked={isCompleted}
+                        onCheckedChange={(checked) => handleToggleGoal(goal.id)}
+                        disabled={updateDevLogMutation.isPending}
+                      />
+                      <div className="flex-1">
+                        <p className={`font-medium ${isCompleted ? 'line-through text-gray-500' : 'text-gray-700'}`}>
+                          {goal.title}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {isCompleted && log?.hoursSpent 
+                            ? `Completed: ${log.hoursSpent}h`
+                            : goal.description || 'Daily practice'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
+
         {/* Progress Overview */}
         <section className="p-4">
           <Card className="mb-4">
@@ -186,43 +229,6 @@ export default function Dev() {
                         </p>
                       </div>
                       {getStatusBadge(goal)}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Daily Dev Routine */}
-        <section className="p-4">
-          <h3 className="text-md font-semibold text-gray-800 mb-4">Today's Dev Tasks</h3>
-          
-          <div className="space-y-3">
-            {dailyGoals.map((goal) => {
-              const log = devLogs.find(log => log.devGoalId === goal.id);
-              const isCompleted = log?.completed || false;
-              
-              return (
-                <Card key={goal.id}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-3">
-                      <Checkbox
-                        checked={isCompleted}
-                        onCheckedChange={(checked) => handleToggleGoal(goal.id)}
-                        disabled={updateDevLogMutation.isPending}
-                      />
-                      <div className="flex-1">
-                        <p className={`font-medium ${isCompleted ? 'line-through text-gray-500' : 'text-gray-700'}`}>
-                          {goal.title}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {isCompleted && log?.hoursSpent 
-                            ? `Completed: ${log.hoursSpent}h`
-                            : goal.description || 'Daily practice'
-                          }
-                        </p>
-                      </div>
                     </div>
                   </CardContent>
                 </Card>
