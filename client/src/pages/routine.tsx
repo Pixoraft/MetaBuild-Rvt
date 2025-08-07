@@ -213,7 +213,7 @@ export default function Routine() {
             </TabsContent>
             
             <TabsContent value="weekly" className="mt-4">
-              <RoutineList routines={weeklyRoutines.filter(() => true)} title="Today's Weekly Tasks" />
+              <RoutineList routines={todaysWeeklyRoutines} title="Today's Weekly Tasks" />
             </TabsContent>
           </Tabs>
         </section>

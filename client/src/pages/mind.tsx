@@ -177,17 +177,12 @@ export default function Mind() {
                           </p>
                         </div>
                         <div className="flex items-center space-x-2">
-                          {isCompleted ? (
-                            getStatusBadge(exercise)
-                          ) : canStart ? (
-                            <Checkbox
-                              checked={false}
-                              onCheckedChange={() => handleToggleExercise(exercise.id)}
-                              disabled={updateMindLogMutation.isPending}
-                            />
-                          ) : (
-                            getStatusBadge(exercise)
-                          )}
+                          <Checkbox
+                            checked={isCompleted}
+                            onCheckedChange={() => handleToggleExercise(exercise.id)}
+                            disabled={updateMindLogMutation.isPending}
+                          />
+                          {getStatusBadge(exercise)}
                           <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
                             <MoreVertical className="w-4 h-4" />
                           </Button>
