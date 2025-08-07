@@ -1,13 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProgressCircle } from "@/components/progress-circle";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MoreVertical, Dumbbell } from "lucide-react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -59,6 +60,31 @@ export default function Workout() {
   });
   const workoutPercentage = todaysExercises.length > 0 ? 
     Math.round((todaysCompletedLogs.length / todaysExercises.length) * 100) : 0;
+
+  // Prepare pie chart data for today's workout types
+  const workoutTypeStats = todaysExercises.reduce((acc: any, exercise: any) => {
+    const workoutType = workoutTypes.find(w => w.id === exercise.workoutTypeId);
+    const typeName = workoutType?.name || 'Unknown';
+    const isCompleted = workoutLogs.some(log => log.exerciseId === exercise.id && log.completed);
+    
+    if (!acc[typeName]) {
+      acc[typeName] = { total: 0, completed: 0 };
+    }
+    acc[typeName].total += 1;
+    if (isCompleted) acc[typeName].completed += 1;
+    
+    return acc;
+  }, {});
+
+  const pieChartData = Object.entries(workoutTypeStats).map(([name, stats]: [string, any]) => ({
+    name,
+    completed: stats.completed,
+    remaining: stats.total - stats.completed,
+    total: stats.total,
+    percentage: Math.round((stats.completed / stats.total) * 100)
+  }));
+
+  const COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4', '#84cc16'];
 
   const updateWorkoutLogMutation = useMutation({
     mutationFn: async ({ exerciseId, completed }: { exerciseId: string; completed: boolean }) => {
@@ -125,6 +151,58 @@ export default function Workout() {
           </div>
         </div>
       </header>
+
+      {/* Today's Workout Distribution Pie Chart */}
+      {pieChartData.length > 0 && (
+        <section className="p-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">Today's Workout Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieChartData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={40}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="completed"
+                    >
+                      {pieChartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value: any, name: any, props: any) => [
+                        `${value}/${props.payload.total} exercises`,
+                        `${props.payload.name} (${props.payload.percentage}%)`
+                      ]}
+                    />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="grid grid-cols-2 gap-2 mt-4">
+                {pieChartData.map((item, index) => (
+                  <div key={item.name} className="flex items-center space-x-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                    />
+                    <span className="text-sm text-gray-600">
+                      {item.name}: {item.completed}/{item.total}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+      )}
 
       <main>
         {/* Progress Overview */}

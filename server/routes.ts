@@ -548,11 +548,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = FIXED_USER_ID;
       const { startDate, endDate } = req.params;
-      // For now, return empty array - would need to implement range query in storage
-      res.json([]);
+      
+      // Ensure we have performance data by calculating for any missing days
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const dates = [];
+      
+      for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+        const dateStr = format(d, 'yyyy-MM-dd');
+        dates.push(dateStr);
+        
+        // Check if performance data exists, if not calculate it
+        const existing = await storage.getDailyPerformance(userId, dateStr);
+        if (!existing) {
+          await calculateAndUpdateDailyPerformance(userId, dateStr);
+        }
+      }
+      
+      const performances = await storage.getDailyPerformanceRange(userId, startDate, endDate);
+      res.json(performances);
     } catch (error) {
-      console.error("Error fetching performance range:", error);
-      res.status(500).json({ message: "Failed to fetch performance range" });
+      console.error("Error fetching daily performance range:", error);
+      res.status(500).json({ message: "Failed to fetch daily performance range" });
     }
   });
 

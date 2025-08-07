@@ -40,7 +40,7 @@ import {
   type DailyPerformance,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, gte, lte } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
@@ -317,7 +317,8 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(dailyPerformance)
       .where(and(
         eq(dailyPerformance.userId, userId),
-        // Note: you might need to adjust this based on your date format
+        gte(dailyPerformance.date, startDate),
+        lte(dailyPerformance.date, endDate)
       ))
       .orderBy(dailyPerformance.date);
   }
