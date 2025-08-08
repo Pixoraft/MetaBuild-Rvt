@@ -16,30 +16,74 @@ export default function Dashboard() {
 
   const { data: todaysPerformance } = useQuery<any>({
     queryKey: ['/api/daily-performance', today],
-    queryFn: () => fetch(`/api/daily-performance?date=${today}`).then(res => res.json()),
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/daily-performance?date=${today}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return response.json();
+      } catch (error) {
+        console.error('Failed to fetch performance data:', error);
+        return { tasksScore: 0, workoutScore: 0, mindScore: 0, routineScore: 0, devScore: 0, overallScore: 0 };
+      }
+    },
     enabled: !!user,
-    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
+    refetchInterval: 5000,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   const { data: waterIntake } = useQuery<any>({
     queryKey: ['/api/water-intake', today],
-    queryFn: () => fetch(`/api/water-intake?date=${today}`).then(res => res.json()),
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/water-intake?date=${today}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return response.json();
+      } catch (error) {
+        console.error('Failed to fetch water intake data:', error);
+        return { amount: 0, target: 3000 };
+      }
+    },
     enabled: !!user,
-    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
+    refetchInterval: 5000,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   const { data: tasks } = useQuery<any[]>({
     queryKey: ['/api/tasks', today],
-    queryFn: () => fetch(`/api/tasks?date=${today}`).then(res => res.json()),
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/tasks?date=${today}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return response.json();
+      } catch (error) {
+        console.error('Failed to fetch tasks data:', error);
+        return [];
+      }
+    },
     enabled: !!user,
-    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
+    refetchInterval: 5000,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   const { data: workoutLogs } = useQuery<any[]>({
     queryKey: ['/api/workout-logs', today],
-    queryFn: () => fetch(`/api/workout-logs?date=${today}`).then(res => res.json()),
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/workout-logs?date=${today}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return response.json();
+      } catch (error) {
+        console.error('Failed to fetch workout logs data:', error);
+        return [];
+      }
+    },
     enabled: !!user,
-    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
+    refetchInterval: 5000,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   const performanceData = [

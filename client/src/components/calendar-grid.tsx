@@ -26,12 +26,22 @@ export function CalendarGrid({ currentDate }: CalendarGridProps) {
     queryFn: async () => {
       const startDate = format(monthStart, 'yyyy-MM-dd');
       const endDate = format(monthEnd, 'yyyy-MM-dd');
-      const response = await fetch(`/api/daily-performance/range/${startDate}/${endDate}`);
-      return response.json();
+      try {
+        const response = await fetch(`/api/daily-performance/range/${startDate}/${endDate}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      } catch (error) {
+        console.error('Failed to fetch performance data:', error);
+        return []; // Return empty array on error
+      }
     },
     enabled: !!user,
     refetchInterval: 3000, // Refresh every 3 seconds for faster calendar updates
     staleTime: 0, // Always consider data stale to force refetch
+    retry: 3, // Retry failed requests 3 times
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
 
   const getPerformanceColor = (day: Date) => {
