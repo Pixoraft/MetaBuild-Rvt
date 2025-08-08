@@ -1,0 +1,1069 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Build - Personal Productivity Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#8B5CF6',
+                        danger: '#EF4444',
+                        warning: '#F59E0B',
+                        neutral: {
+                            50: '#F8FAFC',
+                            100: '#F1F5F9',
+                            200: '#E2E8F0',
+                            300: '#CBD5E1',
+                            400: '#94A3B8',
+                            500: '#64748B',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1E293B',
+                            900: '#0F172A'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-neutral-50 font-sans text-neutral-800 overflow-x-hidden">
+    <!-- @COMPONENT: AppContainer -->
+    <div class="min-h-screen max-w-md mx-auto bg-white shadow-xl relative">
+        
+        <!-- @COMPONENT: Navigation Header -->
+        <header class="sticky top-0 z-50 bg-white border-b border-neutral-200 px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+                        <i class="fas fa-bolt text-white text-sm"></i>
+                    </div>
+                    <h1 class="text-lg font-semibold text-neutral-800" data-bind="currentPage.title">Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <!-- @FUNCTIONALITY: Streak counter should pull from user's actual streak data -->
+                    <div class="bg-secondary/10 px-3 py-1 rounded-full">
+                        <span class="text-xs font-medium text-secondary" data-bind="user.currentStreak">7🔥</span>
+                    </div>
+                    <button class="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center" data-event="click:openProfile">
+                        <i class="fas fa-user text-neutral-600 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- @COMPONENT: MainContent -->
+        <main class="pb-20">
+            
+            <!-- @STATE: activeView:string = 'dashboard' -->
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="page-view">
+                
+                <!-- Streaks Section -->
+                <section class="p-4">
+                    <div class="bg-gradient-to-r from-primary to-accent rounded-xl p-4 text-white mb-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm opacity-90">Current Streak</p>
+                                <p class="text-2xl font-bold" data-bind="streaks.current">7 days</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm opacity-90">Best Streak</p>
+                                <p class="text-2xl font-bold" data-bind="streaks.best">23 days</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Today's Performance -->
+                <section class="p-4">
+                    <h2 class="text-lg font-semibold mb-3 text-neutral-800">Today's Performance</h2>
+                    <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                        <!-- @MAP: performanceCategories.map(category => ( -->
+                        <div class="flex items-center justify-between py-3 border-b border-neutral-100 last:border-b-0">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-tasks text-primary text-sm" data-mock="true"></i>
+                                </div>
+                                <span class="font-medium text-neutral-700" data-mock="true">Daily Tasks</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-16 bg-neutral-200 rounded-full h-2">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 75%" data-bind="category.progress" data-mock="true"></div>
+                                </div>
+                                <span class="text-sm font-medium text-neutral-600" data-mock="true">75%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-neutral-100 last:border-b-0">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-secondary/10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-dumbbell text-secondary text-sm" data-mock="true"></i>
+                                </div>
+                                <span class="font-medium text-neutral-700" data-mock="true">Workout</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-16 bg-neutral-200 rounded-full h-2">
+                                    <div class="bg-secondary h-2 rounded-full" style="width: 100%" data-mock="true"></div>
+                                </div>
+                                <span class="text-sm font-medium text-neutral-600" data-mock="true">100%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-neutral-100 last:border-b-0">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-brain text-accent text-sm" data-mock="true"></i>
+                                </div>
+                                <span class="font-medium text-neutral-700" data-mock="true">Mind Workout</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-16 bg-neutral-200 rounded-full h-2">
+                                    <div class="bg-accent h-2 rounded-full" style="width: 60%" data-mock="true"></div>
+                                </div>
+                                <span class="text-sm font-medium text-neutral-600" data-mock="true">60%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-neutral-100 last:border-b-0">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-warning/10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-moon text-warning text-sm" data-mock="true"></i>
+                                </div>
+                                <span class="font-medium text-neutral-700" data-mock="true">Daily Routine</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-16 bg-neutral-200 rounded-full h-2">
+                                    <div class="bg-warning h-2 rounded-full" style="width: 90%" data-mock="true"></div>
+                                </div>
+                                <span class="text-sm font-medium text-neutral-600" data-mock="true">90%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between py-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-danger/10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-code text-danger text-sm" data-mock="true"></i>
+                                </div>
+                                <span class="font-medium text-neutral-700" data-mock="true">Dev Progress</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-16 bg-neutral-200 rounded-full h-2">
+                                    <div class="bg-danger h-2 rounded-full" style="width: 45%" data-mock="true"></div>
+                                </div>
+                                <span class="text-sm font-medium text-neutral-600" data-mock="true">45%</span>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+                </section>
+
+                <!-- Monthly Calendar -->
+                <section class="p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-lg font-semibold text-neutral-800">January 2025</h2>
+                        <div class="flex space-x-1">
+                            <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-event="click:previousMonth">
+                                <i class="fas fa-chevron-left text-neutral-600 text-xs"></i>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-event="click:nextMonth">
+                                <i class="fas fa-chevron-right text-neutral-600 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                        <!-- Calendar Grid -->
+                        <div class="grid grid-cols-7 gap-1 mb-2">
+                            <div class="text-center text-xs font-medium text-neutral-500 py-2">S</div>
+                            <div class="text-center text-xs font-medium text-neutral-500 py-2">M</div>
+                            <div class="text-center text-xs font-medium text-neutral-500 py-2">T</div>
+                            <div class="text-center text-xs font-medium text-neutral-500 py-2">W</div>
+                            <div class="text-center text-xs font-medium text-neutral-500 py-2">T</div>
+                            <div class="text-center text-xs font-medium text-neutral-500 py-2">F</div>
+                            <div class="text-center text-xs font-medium text-neutral-500 py-2">S</div>
+                        </div>
+                        
+                        <!-- @FUNCTIONALITY: Calendar should show color-coded performance for each day -->
+                        <div class="grid grid-cols-7 gap-1">
+                            <!-- @MAP: calendarDays.map(day => ( -->
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-neutral-100 text-neutral-400" data-mock="true">29</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-neutral-100 text-neutral-400" data-mock="true">30</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-neutral-100 text-neutral-400" data-mock="true">31</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-secondary text-white" data-event="click:showDayDetails" data-mock="true">1</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-secondary text-white" data-mock="true">2</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-warning text-white" data-mock="true">3</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-primary text-white" data-mock="true">4</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-secondary text-white" data-mock="true">5</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-danger text-white" data-mock="true">6</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-secondary text-white" data-mock="true">7</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-primary text-white" data-mock="true">8</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-secondary text-white" data-mock="true">9</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-warning text-white" data-mock="true">10</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-secondary text-white" data-mock="true">11</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-neutral-200 text-neutral-600" data-mock="true">12</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-neutral-200 text-neutral-600" data-mock="true">13</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-neutral-200 text-neutral-600" data-mock="true">14</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-neutral-200 text-neutral-600" data-mock="true">15</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-neutral-200 text-neutral-600" data-mock="true">16</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-neutral-200 text-neutral-600" data-mock="true">17</button>
+                            <button class="w-8 h-8 rounded-lg text-sm font-medium bg-neutral-200 text-neutral-600" data-mock="true">18</button>
+                            <!-- @END_MAP )) -->
+                        </div>
+                        
+                        <!-- Legend -->
+                        <div class="flex items-center justify-center space-x-4 mt-4 pt-3 border-t border-neutral-200">
+                            <div class="flex items-center space-x-1">
+                                <div class="w-3 h-3 bg-secondary rounded-full"></div>
+                                <span class="text-xs text-neutral-600">Great</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <div class="w-3 h-3 bg-primary rounded-full"></div>
+                                <span class="text-xs text-neutral-600">Good</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <div class="w-3 h-3 bg-warning rounded-full"></div>
+                                <span class="text-xs text-neutral-600">Okay</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <div class="w-3 h-3 bg-danger rounded-full"></div>
+                                <span class="text-xs text-neutral-600">Poor</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Weekly Summary -->
+                <section class="p-4">
+                    <h2 class="text-lg font-semibold mb-3 text-neutral-800">This Week</h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i class="fas fa-trophy text-warning text-sm"></i>
+                                <span class="text-sm font-medium text-neutral-700">Tasks Completed</span>
+                            </div>
+                            <p class="text-2xl font-bold text-neutral-800" data-bind="weeklyStats.tasksCompleted">47</p>
+                            <p class="text-xs text-secondary">+12% from last week</p>
+                        </div>
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i class="fas fa-fire text-danger text-sm"></i>
+                                <span class="text-sm font-medium text-neutral-700">Workout Days</span>
+                            </div>
+                            <p class="text-2xl font-bold text-neutral-800" data-bind="weeklyStats.workoutDays">6/7</p>
+                            <p class="text-xs text-secondary">Perfect week!</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Daily Tasks View -->
+            <div id="tasks-view" class="page-view hidden">
+                <section class="p-4">
+                    <!-- Progress Overview -->
+                    <div class="bg-white rounded-xl border border-neutral-200 p-4 mb-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-neutral-800">Today's Progress</h2>
+                            <span class="text-sm text-neutral-600" data-bind="tasks.date">Jan 12, 2025</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-6">
+                            <!-- Tasks Progress Circle -->
+                            <div class="relative w-20 h-20">
+                                <svg class="w-20 h-20 transform -rotate-90">
+                                    <circle cx="40" cy="40" r="32" stroke="#E2E8F0" stroke-width="6" fill="none"></circle>
+                                    <circle cx="40" cy="40" r="32" stroke="#3B82F6" stroke-width="6" fill="none"
+                                            stroke-dasharray="201" stroke-dashoffset="50" stroke-linecap="round"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-sm font-bold text-primary" data-bind="tasks.percentage">75%</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Water Intake Circle -->
+                            <div class="relative w-16 h-16">
+                                <svg class="w-16 h-16 transform -rotate-90">
+                                    <circle cx="32" cy="32" r="24" stroke="#E2E8F0" stroke-width="4" fill="none"></circle>
+                                    <circle cx="32" cy="32" r="24" stroke="#10B981" stroke-width="4" fill="none"
+                                            stroke-dasharray="151" stroke-dashoffset="38" stroke-linecap="round"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <i class="fas fa-tint text-secondary text-xs"></i>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <p class="text-sm text-neutral-600">6 of 8 tasks</p>
+                                <p class="text-xs text-neutral-500">2.5L of 3L water</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task List -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-md font-semibold text-neutral-800">Today's Tasks</h3>
+                            <button class="text-sm text-primary font-medium" data-event="click:addTask">+ Add Task</button>
+                        </div>
+                        
+                        <!-- @MAP: tasks.map(task => ( -->
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="w-6 h-6 rounded-full border-2 border-secondary bg-secondary flex items-center justify-center" data-event="click:toggleTask" data-mock="true">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </button>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700 line-through text-neutral-500" data-bind="task.title" data-mock="true">Complete morning routine</p>
+                                    <p class="text-xs text-neutral-500" data-bind="task.time" data-mock="true">Completed at 7:30 AM</p>
+                                </div>
+                                <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-event="click:showTaskMenu" data-mock="true">
+                                    <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="w-6 h-6 rounded-full border-2 border-secondary bg-secondary flex items-center justify-center" data-mock="true">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </button>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700 line-through text-neutral-500" data-mock="true">Review React documentation</p>
+                                    <p class="text-xs text-neutral-500" data-mock="true">Completed at 10:15 AM</p>
+                                </div>
+                                <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                    <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="w-6 h-6 rounded-full border-2 border-neutral-300" data-event="click:toggleTask" data-mock="true">
+                                </button>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700" data-mock="true">Finish LeetCode problem</p>
+                                    <p class="text-xs text-neutral-500" data-mock="true">Due: 6:00 PM</p>
+                                </div>
+                                <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                    <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="w-6 h-6 rounded-full border-2 border-neutral-300" data-mock="true">
+                                </button>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700" data-mock="true">Night skincare routine</p>
+                                    <p class="text-xs text-neutral-500" data-mock="true">Due: 10:00 PM</p>
+                                </div>
+                                <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                    <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Workout View -->
+            <div id="workout-view" class="page-view hidden">
+                <section class="p-4">
+                    <!-- Progress Overview -->
+                    <div class="bg-white rounded-xl border border-neutral-200 p-4 mb-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-neutral-800">Today's Workout</h2>
+                            <span class="text-sm text-neutral-600">Day 2 - Pull</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="relative w-20 h-20">
+                                <svg class="w-20 h-20 transform -rotate-90">
+                                    <circle cx="40" cy="40" r="32" stroke="#E2E8F0" stroke-width="6" fill="none"></circle>
+                                    <circle cx="40" cy="40" r="32" stroke="#10B981" stroke-width="6" fill="none"
+                                            stroke-dasharray="201" stroke-dashoffset="0" stroke-linecap="round"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-sm font-bold text-secondary">100%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-sm text-neutral-600">All exercises completed!</p>
+                                <p class="text-xs text-secondary">Great job on Pull day</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workout Tabs -->
+                    <div class="flex space-x-1 mb-4 bg-neutral-100 rounded-lg p-1">
+                        <button class="flex-1 py-2 px-3 rounded-md bg-white text-sm font-medium text-neutral-800 shadow-sm" data-event="click:showDailyWorkout">Daily Workout</button>
+                        <button class="flex-1 py-2 px-3 rounded-md text-sm font-medium text-neutral-600" data-event="click:showWeeklyWorkout">Weekly Plan</button>
+                    </div>
+
+                    <!-- Daily Workout List -->
+                    <div id="daily-workout-content">
+                        <div class="space-y-3">
+                            <!-- @MAP: todayWorkout.exercises.map(exercise => ( -->
+                            <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="font-medium text-neutral-800" data-bind="exercise.name" data-mock="true">Pull-Ups / Assisted</h3>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-event="click:showExerciseMenu" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-neutral-600" data-bind="exercise.details" data-mock="true">4 sets × 12 reps</span>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs text-secondary bg-secondary/10 px-2 py-1 rounded-full" data-mock="true">✓ Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="font-medium text-neutral-800" data-mock="true">Towel Rows</h3>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-neutral-600" data-mock="true">3 sets × 20 reps</span>
+                                    <span class="text-xs text-secondary bg-secondary/10 px-2 py-1 rounded-full" data-mock="true">✓ Complete</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="font-medium text-neutral-800" data-mock="true">Towel Bicep Curls</h3>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-neutral-600" data-mock="true">3 sets × 20 reps</span>
+                                    <span class="text-xs text-secondary bg-secondary/10 px-2 py-1 rounded-full" data-mock="true">✓ Complete</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="font-medium text-neutral-800" data-mock="true">Gripper Fast</h3>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-neutral-600" data-mock="true">3 sets × 40 reps</span>
+                                    <span class="text-xs text-secondary bg-secondary/10 px-2 py-1 rounded-full" data-mock="true">✓ Complete</span>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Mind Workout View -->
+            <div id="mind-view" class="page-view hidden">
+                <section class="p-4">
+                    <!-- Progress Overview -->
+                    <div class="bg-white rounded-xl border border-neutral-200 p-4 mb-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-neutral-800">Mind Workout</h2>
+                            <span class="text-sm text-neutral-600">Today</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="relative w-20 h-20">
+                                <svg class="w-20 h-20 transform -rotate-90">
+                                    <circle cx="40" cy="40" r="32" stroke="#E2E8F0" stroke-width="6" fill="none"></circle>
+                                    <circle cx="40" cy="40" r="32" stroke="#8B5CF6" stroke-width="6" fill="none"
+                                            stroke-dasharray="201" stroke-dashoffset="80" stroke-linecap="round"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-sm font-bold text-accent">60%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-sm text-neutral-600">4 of 7 exercises</p>
+                                <p class="text-xs text-neutral-500">Keep going!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mind Exercise Schedule -->
+                    <div class="space-y-3">
+                        <h3 class="text-md font-semibold text-neutral-800">Today's Schedule</h3>
+                        
+                        <!-- @MAP: mindExercises.map(exercise => ( -->
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
+                                    <span class="text-xs font-semibold text-accent" data-bind="exercise.time" data-mock="true">5:40</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700" data-bind="exercise.name" data-mock="true">Box Breathing + Sense Drill</p>
+                                    <p class="text-xs text-neutral-500" data-bind="exercise.duration" data-mock="true">15 minutes</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-secondary bg-secondary/10 px-2 py-1 rounded-full" data-mock="true">✓ Done</span>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
+                                    <span class="text-xs font-semibold text-accent" data-mock="true">6:00</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700" data-mock="true">Memory Palace Practice</p>
+                                    <p class="text-xs text-neutral-500" data-mock="true">20 minutes</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-secondary bg-secondary/10 px-2 py-1 rounded-full" data-mock="true">✓ Done</span>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center">
+                                    <span class="text-xs font-semibold text-warning" data-mock="true">12:00</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700" data-mock="true">Pattern Recognition Task</p>
+                                    <p class="text-xs text-neutral-500" data-mock="true">10 minutes</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button class="text-sm text-primary font-medium" data-event="click:startExercise" data-mock="true">Start</button>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
+                                    <span class="text-xs font-semibold text-neutral-500" data-mock="true">4:00</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700" data-mock="true">Recall & Visualization</p>
+                                    <p class="text-xs text-neutral-500" data-mock="true">15 minutes</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-neutral-400" data-mock="true">Pending</span>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Daily Routine View -->
+            <div id="routine-view" class="page-view hidden">
+                <section class="p-4">
+                    <!-- Progress Overview -->
+                    <div class="bg-white rounded-xl border border-neutral-200 p-4 mb-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-neutral-800">Daily Routine</h2>
+                            <span class="text-sm text-neutral-600">Today</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="relative w-20 h-20">
+                                <svg class="w-20 h-20 transform -rotate-90">
+                                    <circle cx="40" cy="40" r="32" stroke="#E2E8F0" stroke-width="6" fill="none"></circle>
+                                    <circle cx="40" cy="40" r="32" stroke="#F59E0B" stroke-width="6" fill="none"
+                                            stroke-dasharray="201" stroke-dashoffset="20" stroke-linecap="round"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-sm font-bold text-warning">90%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-sm text-neutral-600">Almost done!</p>
+                                <p class="text-xs text-neutral-500">9 of 10 tasks completed</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Routine Tabs -->
+                    <div class="flex space-x-1 mb-4 bg-neutral-100 rounded-lg p-1">
+                        <button class="flex-1 py-2 px-3 rounded-md bg-white text-sm font-medium text-neutral-800 shadow-sm" data-event="click:showMorningRoutine">Morning</button>
+                        <button class="flex-1 py-2 px-3 rounded-md text-sm font-medium text-neutral-600" data-event="click:showNightRoutine">Night</button>
+                        <button class="flex-1 py-2 px-3 rounded-md text-sm font-medium text-neutral-600" data-event="click:showWeeklyRoutine">Weekly</button>
+                    </div>
+
+                    <!-- Morning Routine -->
+                    <div id="morning-routine-content">
+                        <div class="space-y-3">
+                            <h3 class="text-md font-semibold text-neutral-800">Morning Routine</h3>
+                            
+                            <!-- @MAP: morningRoutine.map(task => ( -->
+                            <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                                <div class="flex items-center space-x-3">
+                                    <button class="w-6 h-6 rounded-full border-2 border-secondary bg-secondary flex items-center justify-center" data-event="click:toggleRoutineTask" data-mock="true">
+                                        <i class="fas fa-check text-white text-xs"></i>
+                                    </button>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-neutral-700 line-through text-neutral-500" data-bind="task.name" data-mock="true">Lemon & Honey Detox Drink</p>
+                                        <p class="text-xs text-neutral-500" data-bind="task.description" data-mock="true">Start the day with detox</p>
+                                    </div>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-event="click:showRoutineMenu" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                                <div class="flex items-center space-x-3">
+                                    <button class="w-6 h-6 rounded-full border-2 border-secondary bg-secondary flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-check text-white text-xs"></i>
+                                    </button>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-neutral-700 line-through text-neutral-500" data-mock="true">Ice Cubes on Face</p>
+                                        <p class="text-xs text-neutral-500" data-mock="true">Wake up and refresh</p>
+                                    </div>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                                <div class="flex items-center space-x-3">
+                                    <button class="w-6 h-6 rounded-full border-2 border-secondary bg-secondary flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-check text-white text-xs"></i>
+                                    </button>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-neutral-700 line-through text-neutral-500" data-mock="true">Face & Body Wash</p>
+                                        <p class="text-xs text-neutral-500" data-mock="true">Clean and fresh start</p>
+                                    </div>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                                <div class="flex items-center space-x-3">
+                                    <button class="w-6 h-6 rounded-full border-2 border-neutral-300" data-event="click:toggleRoutineTask" data-mock="true">
+                                    </button>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-neutral-700" data-mock="true">Moisturizer + SPF 50+ sunscreen</p>
+                                        <p class="text-xs text-neutral-500" data-mock="true">Protect your skin</p>
+                                    </div>
+                                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-mock="true">
+                                        <i class="fas fa-ellipsis-v text-neutral-600 text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Dev Progress View -->
+            <div id="dev-view" class="page-view hidden">
+                <section class="p-4">
+                    <!-- Progress Overview -->
+                    <div class="bg-white rounded-xl border border-neutral-200 p-4 mb-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-neutral-800">Development Goals</h2>
+                            <span class="text-sm text-neutral-600">2025</span>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <!-- Yearly Progress -->
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-medium text-neutral-700">2025 Full Stack Goal</span>
+                                    <span class="text-xs text-neutral-600">15%</span>
+                                </div>
+                                <div class="w-full bg-neutral-200 rounded-full h-2">
+                                    <div class="bg-danger h-2 rounded-full" style="width: 15%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Monthly Progress -->
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-medium text-neutral-700">January Milestones</span>
+                                    <span class="text-xs text-neutral-600">60%</span>
+                                </div>
+                                <div class="w-full bg-neutral-200 rounded-full h-2">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 60%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Weekly Progress -->
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-medium text-neutral-700">This Week</span>
+                                    <span class="text-xs text-neutral-600">85%</span>
+                                </div>
+                                <div class="w-full bg-neutral-200 rounded-full h-2">
+                                    <div class="bg-secondary h-2 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Checklist -->
+                    <div class="space-y-3 mb-6">
+                        <h3 class="text-md font-semibold text-neutral-800">This Week's Goals</h3>
+                        
+                        <!-- @MAP: weeklyDevGoals.map(goal => ( -->
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="w-6 h-6 rounded-full border-2 border-secondary bg-secondary flex items-center justify-center" data-event="click:toggleDevGoal" data-mock="true">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </button>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700 line-through text-neutral-500" data-bind="goal.title" data-mock="true">Complete React Router tutorial</p>
+                                    <p class="text-xs text-neutral-500" data-bind="goal.timeSpent" data-mock="true">1.5h / 1.5h target</p>
+                                </div>
+                                <span class="text-xs text-secondary bg-secondary/10 px-2 py-1 rounded-full" data-mock="true">Done</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="w-6 h-6 rounded-full border-2 border-secondary bg-secondary flex items-center justify-center" data-mock="true">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </button>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700 line-through text-neutral-500" data-mock="true">Solve 5 LeetCode problems</p>
+                                    <p class="text-xs text-neutral-500" data-mock="true">5 / 5 problems</p>
+                                </div>
+                                <span class="text-xs text-secondary bg-secondary/10 px-2 py-1 rounded-full" data-mock="true">Done</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="w-6 h-6 rounded-full border-2 border-warning bg-warning flex items-center justify-center" data-mock="true">
+                                    <i class="fas fa-clock text-white text-xs"></i>
+                                </button>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700" data-mock="true">Build project component library</p>
+                                    <p class="text-xs text-neutral-500" data-mock="true">3h / 5h target</p>
+                                </div>
+                                <span class="text-xs text-warning bg-warning/10 px-2 py-1 rounded-full" data-mock="true">In Progress</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="w-6 h-6 rounded-full border-2 border-neutral-300" data-event="click:toggleDevGoal" data-mock="true">
+                                </button>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700" data-mock="true">Update GitHub portfolio</p>
+                                    <p class="text-xs text-neutral-500" data-mock="true">0h / 1h target</p>
+                                </div>
+                                <span class="text-xs text-neutral-400" data-mock="true">Pending</span>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+
+                    <!-- Daily Dev Routine -->
+                    <div class="space-y-3">
+                        <h3 class="text-md font-semibold text-neutral-800">Today's Dev Tasks</h3>
+                        
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="w-6 h-6 rounded-full border-2 border-secondary bg-secondary flex items-center justify-center" data-mock="true">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </button>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700 line-through text-neutral-500" data-mock="true">DSA Practice (1-1.5h)</p>
+                                    <p class="text-xs text-neutral-500" data-mock="true">Completed: 1.2h</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="w-6 h-6 rounded-full border-2 border-neutral-300" data-mock="true">
+                                </button>
+                                <div class="flex-1">
+                                    <p class="font-medium text-neutral-700" data-mock="true">React/WebDev (1-1.5h)</p>
+                                    <p class="text-xs text-neutral-500" data-mock="true">Scheduled for 4:00 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- @COMPONENT: FloatingActionButton -->
+        <div class="fixed bottom-24 right-4 z-40">
+            <button class="w-14 h-14 bg-gradient-to-r from-primary to-accent rounded-full shadow-lg flex items-center justify-center text-white" data-event="click:quickAdd" data-implementation="Should show context-aware add modal based on current page">
+                <i class="fas fa-plus text-lg"></i>
+            </button>
+        </div>
+
+        <!-- @COMPONENT: BottomNavigation -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-200 z-50 max-w-md mx-auto">
+            <div class="flex items-center justify-around py-2">
+                <button class="flex flex-col items-center py-2 px-3 text-primary" data-event="click:showDashboard" data-implementation="Should update activeView state">
+                    <i class="fas fa-home text-lg mb-1"></i>
+                    <span class="text-xs font-medium">Home</span>
+                </button>
+                <button class="flex flex-col items-center py-2 px-3 text-neutral-400" data-event="click:showTasks">
+                    <i class="fas fa-tasks text-lg mb-1"></i>
+                    <span class="text-xs">Tasks</span>
+                </button>
+                <button class="flex flex-col items-center py-2 px-3 text-neutral-400" data-event="click:showWorkout">
+                    <i class="fas fa-dumbbell text-lg mb-1"></i>
+                    <span class="text-xs">Workout</span>
+                </button>
+                <button class="flex flex-col items-center py-2 px-3 text-neutral-400" data-event="click:showMind">
+                    <i class="fas fa-brain text-lg mb-1"></i>
+                    <span class="text-xs">Mind</span>
+                </button>
+                <button class="flex flex-col items-center py-2 px-3 text-neutral-400" data-event="click:showRoutine">
+                    <i class="fas fa-moon text-lg mb-1"></i>
+                    <span class="text-xs">Routine</span>
+                </button>
+                <button class="flex flex-col items-center py-2 px-3 text-neutral-400" data-event="click:showDev">
+                    <i class="fas fa-code text-lg mb-1"></i>
+                    <span class="text-xs">Dev</span>
+                </button>
+            </div>
+        </nav>
+
+    </div>
+    <!-- @END_COMPONENT: AppContainer -->
+
+    <!-- @COMPONENT: Modal Overlays -->
+    <!-- Add Task Modal -->
+    <div id="add-task-modal" class="fixed inset-0 bg-black/50 z-50 hidden" data-implementation="Should be shown/hidden based on modal state">
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-xl max-w-md mx-auto">
+            <div class="p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-neutral-800">Add New Task</h3>
+                    <button class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center" data-event="click:closeModal">
+                        <i class="fas fa-times text-neutral-600 text-sm"></i>
+                    </button>
+                </div>
+                
+                <form class="space-y-4" data-event="submit:addNewTask">
+                    <div>
+                        <label class="block text-sm font-medium text-neutral-700 mb-1">Task Name</label>
+                        <input type="text" placeholder="Enter task name..." class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" data-mock="true">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-neutral-700 mb-1">Due Time (Optional)</label>
+                        <input type="time" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" data-mock="true">
+                    </div>
+                    
+                    <div class="flex space-x-3 pt-2">
+                        <button type="button" class="flex-1 py-2 px-4 bg-neutral-100 text-neutral-700 rounded-lg font-medium" data-event="click:closeModal">Cancel</button>
+                        <button type="submit" class="flex-1 py-2 px-4 bg-primary text-white rounded-lg font-medium">Add Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- @END_COMPONENT: Modal Overlays -->
+
+    <script>
+        // TODO: Implement proper state management, API calls, and backend integration
+        // TODO: Add service worker for offline functionality
+        // TODO: Implement push notifications for reminders
+        
+        (function() {
+            'use strict';
+            
+            // App State Management
+            let appState = {
+                currentView: 'dashboard',
+                user: {
+                    currentStreak: 7,
+                    bestStreak: 23,
+                    name: 'User'
+                },
+                tasks: [],
+                workouts: [],
+                routines: [],
+                devGoals: []
+            };
+
+            // Navigation Handler
+            function showView(viewId) {
+                // Hide all views
+                document.querySelectorAll('.page-view').forEach(view => {
+                    view.classList.add('hidden');
+                });
+                
+                // Show selected view
+                const targetView = document.getElementById(viewId + '-view');
+                if (targetView) {
+                    targetView.classList.remove('hidden');
+                }
+                
+                // Update navigation state
+                document.querySelectorAll('nav button').forEach(btn => {
+                    btn.classList.remove('text-primary');
+                    btn.classList.add('text-neutral-400');
+                });
+                
+                // Update active nav button
+                const activeBtn = document.querySelector(`[data-event="click:show${viewId.charAt(0).toUpperCase() + viewId.slice(1)}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.remove('text-neutral-400');
+                    activeBtn.classList.add('text-primary');
+                }
+                
+                // Update header title
+                const headerTitle = document.querySelector('header h1');
+                const titles = {
+                    'dashboard': 'Dashboard',
+                    'tasks': 'Daily Tasks',
+                    'workout': 'Workout',
+                    'mind': 'Mind Workout',
+                    'routine': 'Daily Routine',
+                    'dev': 'Dev Progress'
+                };
+                if (headerTitle && titles[viewId]) {
+                    headerTitle.textContent = titles[viewId];
+                }
+                
+                appState.currentView = viewId;
+            }
+
+            // Modal Handler
+            function showModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('hidden');
+                }
+            }
+
+            function hideModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('hidden');
+                }
+            }
+
+            // Event Listeners
+            document.addEventListener('click', function(e) {
+                const target = e.target.closest('[data-event]');
+                if (!target) return;
+
+                const eventType = target.dataset.event;
+                
+                // Navigation events
+                if (eventType === 'click:showDashboard') showView('dashboard');
+                else if (eventType === 'click:showTasks') showView('tasks');
+                else if (eventType === 'click:showWorkout') showView('workout');
+                else if (eventType === 'click:showMind') showView('mind');
+                else if (eventType === 'click:showRoutine') showView('routine');
+                else if (eventType === 'click:showDev') showView('dev');
+                
+                // Modal events
+                else if (eventType === 'click:addTask') showModal('add-task-modal');
+                else if (eventType === 'click:closeModal') {
+                    hideModal('add-task-modal');
+                }
+                
+                // Task interactions
+                else if (eventType === 'click:toggleTask') {
+                    // TODO: Implement task toggle functionality
+                    console.log('Toggle task:', target);
+                }
+                
+                // Quick add based on current view
+                else if (eventType === 'click:quickAdd') {
+                    if (appState.currentView === 'tasks') {
+                        showModal('add-task-modal');
+                    }
+                    // TODO: Add other quick add modals for different views
+                }
+                
+                // Workout tab switching
+                else if (eventType === 'click:showDailyWorkout') {
+                    // TODO: Implement workout tab switching
+                }
+                else if (eventType === 'click:showWeeklyWorkout') {
+                    // TODO: Implement weekly workout view
+                }
+                
+                // Routine tab switching
+                else if (eventType === 'click:showMorningRoutine') {
+                    // TODO: Implement routine tab switching
+                }
+                
+                e.preventDefault();
+            });
+
+            // Form submissions
+            document.addEventListener('submit', function(e) {
+                const target = e.target.closest('[data-event]');
+                if (!target) return;
+
+                const eventType = target.dataset.event;
+                
+                if (eventType === 'submit:addNewTask') {
+                    // TODO: Implement task creation
+                    console.log('Add new task');
+                    hideModal('add-task-modal');
+                }
+                
+                e.preventDefault();
+            });
+
+            // Initialize app
+            function initializeApp() {
+                // TODO: Load user data from backend
+                // TODO: Initialize offline capabilities
+                // TODO: Set up push notification permissions
+                
+                // Show dashboard by default
+                showView('dashboard');
+                
+                console.log('Meta Build app initialized');
+            }
+
+            // Start the app when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializeApp);
+            } else {
+                initializeApp();
+            }
+            
+        })();
+    </script>
+</body>
+</html>
