@@ -24,7 +24,16 @@ export default function Dev() {
 
   const { data: devLogs = [] } = useQuery<any[]>({
     queryKey: ['/api/dev-goal-logs', today],
-    queryFn: () => fetch(`/api/dev-goal-logs?date=${today}`).then(res => res.json()),
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/dev-goal-logs?date=${today}`);
+        if (!response.ok) return [];
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    },
     enabled: !!user,
   });
 

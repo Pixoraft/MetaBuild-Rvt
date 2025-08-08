@@ -23,7 +23,16 @@ export default function Mind() {
 
   const { data: mindLogs = [] } = useQuery<any[]>({
     queryKey: ['/api/mind-exercise-logs', today],
-    queryFn: () => fetch(`/api/mind-exercise-logs?date=${today}`).then(res => res.json()),
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/mind-exercise-logs?date=${today}`);
+        if (!response.ok) return [];
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    },
     enabled: !!user,
   });
 

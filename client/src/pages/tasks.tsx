@@ -20,7 +20,16 @@ export default function Tasks() {
 
   const { data: tasks = [] } = useQuery<any[]>({
     queryKey: ['/api/tasks', today],
-    queryFn: () => fetch(`/api/tasks?date=${today}`).then(res => res.json()),
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/tasks?date=${today}`);
+        if (!response.ok) return [];
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    },
     enabled: !!user,
   });
 

@@ -24,7 +24,16 @@ export default function Routine() {
 
   const { data: routineLogs = [] } = useQuery<any[]>({
     queryKey: ['/api/routine-logs', today],
-    queryFn: () => fetch(`/api/routine-logs?date=${today}`).then(res => res.json()),
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/routine-logs?date=${today}`);
+        if (!response.ok) return [];
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    },
     enabled: !!user,
   });
 

@@ -26,7 +26,16 @@ export default function Workout() {
 
   const { data: workoutLogs = [] } = useQuery<any[]>({
     queryKey: ['/api/workout-logs', today],
-    queryFn: () => fetch(`/api/workout-logs?date=${today}`).then(res => res.json()),
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/workout-logs?date=${today}`);
+        if (!response.ok) return [];
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    },
     enabled: !!user,
   });
 
@@ -44,7 +53,16 @@ export default function Workout() {
   const activeWorkoutType = selectedWorkoutType ? workoutTypes.find(w => w.id === selectedWorkoutType) : todaysWorkout;
   const { data: exercises = [] } = useQuery<any[]>({
     queryKey: ['/api/exercises', activeWorkoutType?.id],
-    queryFn: () => fetch(`/api/exercises/${activeWorkoutType?.id}`).then(res => res.json()),
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/exercises/${activeWorkoutType?.id}`);
+        if (!response.ok) return [];
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    },
     enabled: !!activeWorkoutType,
   });
   

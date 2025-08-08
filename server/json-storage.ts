@@ -341,9 +341,16 @@ export class JsonStorage implements IStorage {
   }
 
   async getWorkoutLogs(userId: string, date: string): Promise<WorkoutLog[]> {
+    if (!this.workoutLogs || this.workoutLogs.size === 0) {
+      return [];
+    }
     return Array.from(this.workoutLogs.values())
-      .filter(log => log.userId === userId && log.date === date)
-      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+      .filter(log => log && log.userId === userId && log.date === date)
+      .sort((a, b) => {
+        const aTime = a.createdAt instanceof Date ? a.createdAt.getTime() : 0;
+        const bTime = b.createdAt instanceof Date ? b.createdAt.getTime() : 0;
+        return bTime - aTime;
+      });
   }
 
   async createWorkoutLog(logData: InsertWorkoutLog): Promise<WorkoutLog> {
@@ -401,9 +408,16 @@ export class JsonStorage implements IStorage {
   }
 
   async getMindExerciseLogs(userId: string, date: string): Promise<MindExerciseLog[]> {
+    if (!this.mindExerciseLogs || this.mindExerciseLogs.size === 0) {
+      return [];
+    }
     return Array.from(this.mindExerciseLogs.values())
-      .filter(log => log.userId === userId && log.date === date)
-      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+      .filter(log => log && log.userId === userId && log.date === date)
+      .sort((a, b) => {
+        const aTime = a.createdAt instanceof Date ? a.createdAt.getTime() : 0;
+        const bTime = b.createdAt instanceof Date ? b.createdAt.getTime() : 0;
+        return bTime - aTime;
+      });
   }
 
   async createMindExerciseLog(logData: InsertMindExerciseLog): Promise<MindExerciseLog> {
@@ -462,9 +476,16 @@ export class JsonStorage implements IStorage {
   }
 
   async getRoutineLogs(userId: string, date: string): Promise<RoutineLog[]> {
+    if (!this.routineLogs || this.routineLogs.size === 0) {
+      return [];
+    }
     return Array.from(this.routineLogs.values())
-      .filter(log => log.userId === userId && log.date === date)
-      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+      .filter(log => log && log.userId === userId && log.date === date)
+      .sort((a, b) => {
+        const aTime = a.createdAt instanceof Date ? a.createdAt.getTime() : 0;
+        const bTime = b.createdAt instanceof Date ? b.createdAt.getTime() : 0;
+        return bTime - aTime;
+      });
   }
 
   async createRoutineLog(logData: InsertRoutineLog): Promise<RoutineLog> {
@@ -525,9 +546,16 @@ export class JsonStorage implements IStorage {
   }
 
   async getDevGoalLogs(userId: string, date: string): Promise<DevGoalLog[]> {
+    if (!this.devGoalLogs || this.devGoalLogs.size === 0) {
+      return [];
+    }
     return Array.from(this.devGoalLogs.values())
-      .filter(log => log.userId === userId && log.date === date)
-      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+      .filter(log => log && log.userId === userId && log.date === date)
+      .sort((a, b) => {
+        const aTime = a.createdAt instanceof Date ? a.createdAt.getTime() : 0;
+        const bTime = b.createdAt instanceof Date ? b.createdAt.getTime() : 0;
+        return bTime - aTime;
+      });
   }
 
   async createDevGoalLog(logData: InsertDevGoalLog): Promise<DevGoalLog> {
