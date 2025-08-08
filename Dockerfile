@@ -27,7 +27,7 @@ RUN npm ci --only=production && npm cache clean --force
 
 # Copy built application from build stage
 COPY --from=build /app/dist ./dist
-COPY --from=build /app/public ./public
+COPY --from=build /app/dist/public ./public
 
 # Create data directory for JSON storage
 RUN mkdir -p data
