@@ -1,0 +1,119 @@
+2025-08-08T05:05:08.850808343Z ==> Cloning from https://github.com/Pixoraft/MetaBuild-Rvt
+2025-08-08T05:05:09.380571556Z ==> Checking out commit 9369690cdcfc4340b8b4198877dc12bf9b68ba70 in branch main
+2025-08-08T05:05:14.776702328Z #1 [internal] load build definition from Dockerfile
+2025-08-08T05:05:14.776741049Z #1 transferring dockerfile: 865B done
+2025-08-08T05:05:14.776745949Z #1 DONE 0.0s
+2025-08-08T05:05:14.776749269Z 
+2025-08-08T05:05:14.776752779Z #2 [internal] load metadata for docker.io/library/node:18-alpine
+2025-08-08T05:05:14.927366505Z #2 ...
+2025-08-08T05:05:14.927388185Z 
+2025-08-08T05:05:14.927392705Z #3 [auth] library/node:pull render-prod/docker-mirror-repository/library/node:pull token for us-west1-docker.pkg.dev
+2025-08-08T05:05:14.927399586Z #3 DONE 0.0s
+2025-08-08T05:05:15.078061543Z 
+2025-08-08T05:05:15.078085363Z #2 [internal] load metadata for docker.io/library/node:18-alpine
+2025-08-08T05:05:15.226793198Z #2 DONE 0.6s
+2025-08-08T05:05:15.338638536Z 
+2025-08-08T05:05:15.338660786Z #4 [internal] load .dockerignore
+2025-08-08T05:05:15.338669747Z #4 transferring context: 236B done
+2025-08-08T05:05:15.338673287Z #4 DONE 0.0s
+2025-08-08T05:05:15.338676457Z 
+2025-08-08T05:05:15.338680287Z #5 [build 1/6] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+2025-08-08T05:05:15.338684067Z #5 resolve docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e done
+2025-08-08T05:05:15.468050819Z #5 ...
+2025-08-08T05:05:15.468068069Z 
+2025-08-08T05:05:15.468071469Z #6 [internal] load build context
+2025-08-08T05:05:15.468074629Z #6 transferring context: 2.91MB 0.1s done
+2025-08-08T05:05:15.46807722Z #6 DONE 0.1s
+2025-08-08T05:05:15.46807932Z 
+2025-08-08T05:05:15.46808253Z #5 [build 1/6] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+2025-08-08T05:05:15.753891822Z #5 extracting sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870
+2025-08-08T05:05:15.904701683Z #5 extracting sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870 0.1s done
+2025-08-08T05:05:16.054901988Z #5 extracting sha256:dd71dde834b5c203d162902e6b8994cb2309ae049a0eabc4efea161b2b5a3d0e
+2025-08-08T05:05:17.378304107Z #5 extracting sha256:dd71dde834b5c203d162902e6b8994cb2309ae049a0eabc4efea161b2b5a3d0e 1.3s done
+2025-08-08T05:05:17.378330468Z #5 extracting sha256:1e5a4c89cee5c0826c540ab06d4b6b491c96eda01837f430bd47f0d26702d6e3 0.1s done
+2025-08-08T05:05:17.378336148Z #5 extracting sha256:25ff2da83641908f65c3a74d80409d6b1b62ccfaab220b9ea70b80df5a2e0549 0.0s done
+2025-08-08T05:05:17.378340698Z #5 DONE 2.1s
+2025-08-08T05:05:17.378344819Z 
+2025-08-08T05:05:17.378350089Z #7 [build 2/6] WORKDIR /app
+2025-08-08T05:05:17.378354899Z #7 DONE 0.0s
+2025-08-08T05:05:17.378359319Z 
+2025-08-08T05:05:17.378364419Z #8 [build 3/6] COPY package*.json ./
+2025-08-08T05:05:17.378368839Z #8 DONE 0.0s
+2025-08-08T05:05:17.528769289Z 
+2025-08-08T05:05:17.52880065Z #9 [production 4/7] RUN npm ci --only=production && npm cache clean --force
+2025-08-08T05:05:17.679126338Z #9 0.193 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+2025-08-08T05:05:27.451817993Z #9 ...
+2025-08-08T05:05:27.451846174Z 
+2025-08-08T05:05:27.451853684Z #10 [build 4/6] RUN npm ci --only=production
+2025-08-08T05:05:27.451860254Z #10 0.196 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+2025-08-08T05:05:30.484886481Z #10 13.11 
+2025-08-08T05:05:30.484923562Z #10 13.11 added 390 packages, and audited 391 packages in 13s
+2025-08-08T05:05:30.484928652Z #10 13.11 
+2025-08-08T05:05:30.635105587Z #10 13.11 55 packages are looking for funding
+2025-08-08T05:05:30.635124357Z #10 13.11   run `npm fund` for details
+2025-08-08T05:05:30.635144618Z #10 13.11 
+2025-08-08T05:05:30.635148468Z #10 13.11 3 low severity vulnerabilities
+2025-08-08T05:05:30.635151738Z #10 13.11 
+2025-08-08T05:05:30.635154878Z #10 13.11 To address all issues, run:
+2025-08-08T05:05:30.635159118Z #10 13.11   npm audit fix
+2025-08-08T05:05:30.635162478Z #10 13.11 
+2025-08-08T05:05:30.635165519Z #10 13.11 Run `npm audit` for details.
+2025-08-08T05:05:30.635169719Z #10 13.11 npm notice
+2025-08-08T05:05:30.635173699Z #10 13.11 npm notice New major version of npm available! 10.8.2 -> 11.5.2
+2025-08-08T05:05:30.635177589Z #10 13.11 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.5.2
+2025-08-08T05:05:30.635181709Z #10 13.11 npm notice To update run: npm install -g npm@11.5.2
+2025-08-08T05:05:30.635185139Z #10 13.11 npm notice
+2025-08-08T05:05:30.785377755Z #10 ...
+2025-08-08T05:05:30.785396155Z 
+2025-08-08T05:05:30.785400885Z #9 [production 4/7] RUN npm ci --only=production && npm cache clean --force
+2025-08-08T05:05:30.785404505Z #9 13.33 
+2025-08-08T05:05:30.785408855Z #9 13.33 added 390 packages, and audited 391 packages in 13s
+2025-08-08T05:05:30.785412595Z #9 13.33 
+2025-08-08T05:05:30.785416576Z #9 13.33 55 packages are looking for funding
+2025-08-08T05:05:30.785419796Z #9 13.33   run `npm fund` for details
+2025-08-08T05:05:30.785423246Z #9 13.34 
+2025-08-08T05:05:30.785426196Z #9 13.34 3 low severity vulnerabilities
+2025-08-08T05:05:30.785429356Z #9 13.34 
+2025-08-08T05:05:30.785432636Z #9 13.34 To address all issues, run:
+2025-08-08T05:05:30.785436226Z #9 13.34   npm audit fix
+2025-08-08T05:05:30.785439896Z #9 13.34 
+2025-08-08T05:05:30.785443896Z #9 13.34 Run `npm audit` for details.
+2025-08-08T05:05:30.785446436Z #9 13.34 npm notice
+2025-08-08T05:05:30.785448686Z #9 13.34 npm notice New major version of npm available! 10.8.2 -> 11.5.2
+2025-08-08T05:05:30.785468797Z #9 13.34 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.5.2
+2025-08-08T05:05:30.785474387Z #9 13.34 npm notice To update run: npm install -g npm@11.5.2
+2025-08-08T05:05:30.785476557Z #9 13.34 npm notice
+2025-08-08T05:05:30.930089214Z #9 13.55 npm warn using --force Recommended protections disabled.
+2025-08-08T05:05:34.557976329Z #9 DONE 17.0s
+2025-08-08T05:05:34.557993539Z 
+2025-08-08T05:05:34.557997589Z #10 [build 4/6] RUN npm ci --only=production
+2025-08-08T05:05:34.558000759Z #10 DONE 17.0s
+2025-08-08T05:05:34.558003509Z 
+2025-08-08T05:05:34.55800686Z #11 [build 5/6] COPY . .
+2025-08-08T05:05:34.85952789Z #11 DONE 0.3s
+2025-08-08T05:05:34.859544741Z 
+2025-08-08T05:05:34.859548341Z #12 [build 6/6] RUN npm run build
+2025-08-08T05:05:34.991401179Z #12 0.254 
+2025-08-08T05:05:34.99142473Z #12 0.254 > rest-express@1.0.0 build
+2025-08-08T05:05:34.9914302Z #12 0.254 > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+2025-08-08T05:05:34.99143421Z #12 0.254 
+2025-08-08T05:05:35.052794209Z #12 0.260 sh: vite: not found
+2025-08-08T05:05:35.052814129Z #12 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 127
+2025-08-08T05:05:35.052817899Z ------
+2025-08-08T05:05:35.052821529Z  > [build 6/6] RUN npm run build:
+2025-08-08T05:05:35.052824379Z 0.254 
+2025-08-08T05:05:35.052827589Z 0.254 > rest-express@1.0.0 build
+2025-08-08T05:05:35.052830939Z 0.254 > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+2025-08-08T05:05:35.05283375Z 0.254 
+2025-08-08T05:05:35.05283668Z 0.260 sh: vite: not found
+2025-08-08T05:05:35.05283962Z ------
+2025-08-08T05:05:35.053690072Z Dockerfile:14
+2025-08-08T05:05:35.053702493Z --------------------
+2025-08-08T05:05:35.053705663Z   12 |     
+2025-08-08T05:05:35.053709023Z   13 |     # Build the application
+2025-08-08T05:05:35.053712113Z   14 | >>> RUN npm run build
+2025-08-08T05:05:35.053714553Z   15 |     
+2025-08-08T05:05:35.053717133Z   16 |     # Production stage
+2025-08-08T05:05:35.053720043Z --------------------
+2025-08-08T05:05:35.053726073Z error: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 127
+2025-08-08T05:05:35.070071937Z error: exit status 1
