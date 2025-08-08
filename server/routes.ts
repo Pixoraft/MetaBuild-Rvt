@@ -90,18 +90,16 @@ async function calculateAndUpdateDailyPerformance(userId: string, date: string) 
       const today = format(new Date(), 'yyyy-MM-dd');
       const isToday = date === today;
       
-      if (overallScore >= 70 && isToday) {
-        // Good performance - increase streak for today only
-        const newStreak = currentStreak + 1;
-        const newBestStreak = Math.max(newStreak, bestStreak);
+      if (overallScore >= 70 && isToday && currentStreak === 0) {
+        // Good performance - start streak for today only if it's at 0
         await storage.upsertUser({
           id: userId,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
           profileImageUrl: user.profileImageUrl,
-          currentStreak: newStreak,
-          bestStreak: newBestStreak
+          currentStreak: 1,
+          bestStreak: Math.max(1, bestStreak)
         });
       } else if (overallScore < 70 && isToday && currentStreak > 0) {
         // Poor performance today - reset streak
