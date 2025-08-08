@@ -1,0 +1,50 @@
+2025-08-08T06:15:16.512705193Z #12 13.42 npm notice
+2025-08-08T06:15:16.81376253Z #12 13.65 npm warn using --force Recommended protections disabled.
+2025-08-08T06:15:17.216122637Z #12 ...
+2025-08-08T06:15:17.216143018Z 
+2025-08-08T06:15:17.216149538Z #11 [build 4/6] RUN npm ci
+2025-08-08T06:15:17.216154168Z #11 15.90 
+2025-08-08T06:15:17.216159678Z #11 15.90 added 499 packages, and audited 500 packages in 16s
+2025-08-08T06:15:17.216164328Z #11 15.90 
+2025-08-08T06:15:17.216169678Z #11 15.90 67 packages are looking for funding
+2025-08-08T06:15:17.216173038Z #11 15.90   run `npm fund` for details
+2025-08-08T06:15:17.322104228Z #11 16.01 
+2025-08-08T06:15:17.322128449Z #11 16.01 11 vulnerabilities (3 low, 8 moderate)
+2025-08-08T06:15:17.322134209Z #11 16.01 
+2025-08-08T06:15:17.322139629Z #11 16.01 To address issues that do not require attention, run:
+2025-08-08T06:15:17.322144609Z #11 16.01   npm audit fix
+2025-08-08T06:15:17.32216Z #11 16.01 
+2025-08-08T06:15:17.32216396Z #11 16.01 To address all issues (including breaking changes), run:
+2025-08-08T06:15:17.32216663Z #11 16.01   npm audit fix --force
+2025-08-08T06:15:17.32216952Z #11 16.01 
+2025-08-08T06:15:17.32217264Z #11 16.01 Run `npm audit` for details.
+2025-08-08T06:15:17.472862153Z #11 16.01 npm notice
+2025-08-08T06:15:17.60537571Z #11 16.01 npm notice New major version of npm available! 10.8.2 -> 11.5.2
+2025-08-08T06:15:17.60538821Z #11 16.01 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.5.2
+2025-08-08T06:15:17.60539192Z #11 16.01 npm notice To update run: npm install -g npm@11.5.2
+2025-08-08T06:15:17.60539506Z #11 16.01 npm notice
+2025-08-08T06:15:55.347036498Z #11 DONE 53.9s
+2025-08-08T06:15:55.347051109Z 
+2025-08-08T06:15:55.347055909Z #12 [production 5/8] RUN npm ci --only=production && npm cache clean --force
+2025-08-08T06:15:55.347059669Z #12 DONE 52.2s
+2025-08-08T06:15:55.347063139Z 
+2025-08-08T06:15:55.347067049Z #13 [build 5/6] COPY . .
+2025-08-08T06:15:56.097816018Z #13 DONE 0.7s
+2025-08-08T06:15:56.097873319Z 
+2025-08-08T06:15:56.097883179Z #14 [build 6/6] RUN vite build && esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+2025-08-08T06:15:56.399147322Z #14 0.293 /bin/sh: vite: not found
+2025-08-08T06:15:56.530309836Z #14 ERROR: process "/bin/sh -c vite build && esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist" did not complete successfully: exit code: 127
+2025-08-08T06:15:56.703888219Z ------
+2025-08-08T06:15:56.703906619Z  > [build 6/6] RUN vite build && esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist:
+2025-08-08T06:15:56.703912119Z 0.293 /bin/sh: vite: not found
+2025-08-08T06:15:56.703916859Z ------
+2025-08-08T06:15:56.704987515Z Dockerfile:14
+2025-08-08T06:15:56.704998945Z --------------------
+2025-08-08T06:15:56.705003145Z   12 |     
+2025-08-08T06:15:56.705007446Z   13 |     # Build the application
+2025-08-08T06:15:56.705011556Z   14 | >>> RUN vite build && esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+2025-08-08T06:15:56.705015306Z   15 |     
+2025-08-08T06:15:56.705019066Z   16 |     # Production stage
+2025-08-08T06:15:56.705022716Z --------------------
+2025-08-08T06:15:56.705026836Z error: failed to solve: process "/bin/sh -c vite build && esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist" did not complete successfully: exit code: 127
+2025-08-08T06:15:56.7322127Z error: exit status 1
