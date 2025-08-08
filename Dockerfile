@@ -11,7 +11,7 @@ RUN npm ci
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN vite build && esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
 
 # Production stage
 FROM node:18-alpine AS production
@@ -40,4 +40,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:${PORT:-10000}/api/auth/user || exit 1
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["node", "dist/production.js"]

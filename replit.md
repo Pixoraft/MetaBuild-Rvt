@@ -67,3 +67,5 @@ Preferred communication style: Simple, everyday language.
 **Preloaded Data Structure**: The application includes comprehensive preloaded workout routines, development goals, and productivity templates that users can customize, providing immediate value without empty state friction.
 
 **Data Reliability**: Implemented JSON file storage system with automatic daily backups at 12:01 AM and manual backup functionality. All user data is immediately persisted to the server file system, preventing any data loss from browser refresh or session endings. The backup system maintains up to 30 historical snapshots with automatic cleanup.
+
+**Production Deployment Architecture**: Created separate production entry point (`server/production.ts`) that excludes all Vite dependencies to resolve deployment issues. The production build uses esbuild to create a standalone server bundle without development-time imports, ensuring clean deployment to platforms like Render without Vite runtime dependencies.
