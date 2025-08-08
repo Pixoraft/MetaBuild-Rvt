@@ -20,77 +20,37 @@ export default function Dashboard() {
 
   const { data: todaysPerformance } = useQuery<any>({
     queryKey: ['/api/daily-performance', today],
-    queryFn: async () => {
-      try {
-        const response = await fetch(`/api/daily-performance?date=${today}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        return response.json();
-      } catch (error) {
-        console.error('Failed to fetch performance data:', error);
-        return { tasksScore: 0, workoutScore: 0, mindScore: 0, routineScore: 0, devScore: 0, overallScore: 0 };
-      }
-    },
     enabled: !!user,
-    refetchInterval: 10000, // Reduced to 10 seconds
-    retry: 2,
-    retryDelay: 1000,
+    refetchInterval: 30000, // Increased to 30 seconds to reduce server load
+    retry: 1,
+    retryDelay: 2000,
     refetchOnWindowFocus: false,
   });
 
   const { data: waterIntake } = useQuery<any>({
     queryKey: ['/api/water-intake', today],
-    queryFn: async () => {
-      try {
-        const response = await fetch(`/api/water-intake?date=${today}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        return response.json();
-      } catch (error) {
-        console.error('Failed to fetch water intake data:', error);
-        return { amount: 0, target: 3000 };
-      }
-    },
     enabled: !!user,
-    refetchInterval: 10000, // Reduced to 10 seconds to reduce server load
-    retry: 2, // Reduced retries
-    retryDelay: 1000, // Fixed 1 second delay
-    refetchOnWindowFocus: false, // Prevent refetch on window focus
+    refetchInterval: 30000, // Increased to 30 seconds to reduce server load
+    retry: 1,
+    retryDelay: 2000,
+    refetchOnWindowFocus: false,
   });
 
   const { data: tasks } = useQuery<any[]>({
     queryKey: ['/api/tasks', today],
-    queryFn: async () => {
-      try {
-        const response = await fetch(`/api/tasks?date=${today}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        return response.json();
-      } catch (error) {
-        console.error('Failed to fetch tasks data:', error);
-        return [];
-      }
-    },
     enabled: !!user,
-    refetchInterval: 10000, // Reduced to 10 seconds
-    retry: 2,
-    retryDelay: 1000,
+    refetchInterval: 30000, // Increased to 30 seconds
+    retry: 1,
+    retryDelay: 2000,
     refetchOnWindowFocus: false,
   });
 
   const { data: workoutLogs } = useQuery<any[]>({
     queryKey: ['/api/workout-logs', today],
-    queryFn: async () => {
-      try {
-        const response = await fetch(`/api/workout-logs?date=${today}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        return response.json();
-      } catch (error) {
-        console.error('Failed to fetch workout logs data:', error);
-        return [];
-      }
-    },
     enabled: !!user,
-    refetchInterval: 10000, // Reduced to 10 seconds
-    retry: 2,
-    retryDelay: 1000,
+    refetchInterval: 30000, // Increased to 30 seconds
+    retry: 1,
+    retryDelay: 2000,
     refetchOnWindowFocus: false,
   });
 
@@ -130,6 +90,8 @@ export default function Dashboard() {
     { name: "Daily Routine", progress: todaysPerformance?.routineScore || 0, color: "bg-orange-500", icon: "🌅" },
     { name: "Dev Progress", progress: todaysPerformance?.devScore || 0, color: "bg-red-500", icon: "💻" },
   ];
+
+  const waterPercentage = waterIntake ? Math.min((waterIntake.amount / waterIntake.target) * 100, 100) : 0;
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);

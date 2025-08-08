@@ -1001,7 +1001,26 @@
       "createdAt": "2025-08-08T02:26:10.173Z"
     }
   },
-  "workoutLogs": {},
+  "workoutLogs": {
+    "yzumtana6me27n94f": {
+      "id": "yzumtana6me27n94f",
+      "userId": "user-1",
+      "exerciseId": "133wjkls3me27fdq2",
+      "completed": true,
+      "date": "2025-08-08",
+      "completedAt": "2025-08-08T02:32:17.340Z",
+      "createdAt": "2025-08-08T02:32:17.391Z"
+    },
+    "a9jqzi9wdme27nax9": {
+      "id": "a9jqzi9wdme27nax9",
+      "userId": "user-1",
+      "exerciseId": "3xkwojvtzme27fdq4",
+      "completed": true,
+      "date": "2025-08-08",
+      "completedAt": "2025-08-08T02:32:19.536Z",
+      "createdAt": "2025-08-08T02:32:19.725Z"
+    }
+  },
   "mindExercises": {
     "awq8mneb3me27fdry": {
       "id": "awq8mneb3me27fdry",
@@ -1067,7 +1086,35 @@
       "createdAt": "2025-08-08T02:26:10.181Z"
     }
   },
-  "mindExerciseLogs": {},
+  "mindExerciseLogs": {
+    "8343u51upme27nf0p": {
+      "id": "8343u51upme27nf0p",
+      "userId": "user-1",
+      "mindExerciseId": "awq8mneb3me27fdry",
+      "completed": true,
+      "date": "2025-08-08",
+      "completedAt": "2025-08-08T02:32:24.969Z",
+      "createdAt": "2025-08-08T02:32:25.033Z"
+    },
+    "kw7ii5sseme27ng5s": {
+      "id": "kw7ii5sseme27ng5s",
+      "userId": "user-1",
+      "mindExerciseId": "7tnadyi3rme27fdry",
+      "completed": true,
+      "date": "2025-08-08",
+      "completedAt": "2025-08-08T02:32:26.452Z",
+      "createdAt": "2025-08-08T02:32:26.512Z"
+    },
+    "a5gls87cpme27nix8": {
+      "id": "a5gls87cpme27nix8",
+      "userId": "user-1",
+      "mindExerciseId": "kd9s0zm5hme27fdrz",
+      "completed": true,
+      "date": "2025-08-08",
+      "completedAt": "2025-08-08T02:32:30.029Z",
+      "createdAt": "2025-08-08T02:32:30.093Z"
+    }
+  },
   "routines": {
     "69itxlu19me27fds6": {
       "id": "69itxlu19me27fds6",
@@ -1210,7 +1257,26 @@
       "createdAt": "2025-08-08T02:26:10.197Z"
     }
   },
-  "routineLogs": {},
+  "routineLogs": {
+    "iv7gabus7me27no2o": {
+      "id": "iv7gabus7me27no2o",
+      "userId": "user-1",
+      "routineId": "if7nakft2me27fdsd",
+      "completed": true,
+      "date": "2025-08-08",
+      "completedAt": "2025-08-08T02:32:36.687Z",
+      "createdAt": "2025-08-08T02:32:36.768Z"
+    },
+    "43s0kr9pdme27npsx": {
+      "id": "43s0kr9pdme27npsx",
+      "userId": "user-1",
+      "routineId": "8tshz2x2wme27fdsa",
+      "completed": true,
+      "date": "2025-08-08",
+      "completedAt": "2025-08-08T02:32:38.904Z",
+      "createdAt": "2025-08-08T02:32:39.009Z"
+    }
+  },
   "devGoals": {
     "s1a5znky3me27fdso": {
       "id": "s1a5znky3me27fdso",
@@ -1357,8 +1423,27 @@
       "createdAt": "2025-08-08T02:26:10.209Z"
     }
   },
-  "devGoalLogs": {},
-  "waterIntake": {},
+  "devGoalLogs": {
+    "58mkgx4y5me27nuji": {
+      "id": "58mkgx4y5me27nuji",
+      "userId": "user-1",
+      "devGoalId": "v1wdrrlomme27fdss",
+      "hoursSpent": 0,
+      "completed": true,
+      "date": "2025-08-08",
+      "createdAt": "2025-08-08T02:32:45.150Z"
+    }
+  },
+  "waterIntake": {
+    "user-1-2025-08-08": {
+      "id": "pxbxlv433me27n34k",
+      "userId": "user-1",
+      "date": "2025-08-08",
+      "amount": 250,
+      "target": 3000,
+      "createdAt": "2025-08-08T02:32:09.620Z"
+    }
+  },
   "dailyPerformance": {
     "user-1-2025-08-01": {
       "id": "tgxjcneu7me27feh5",
@@ -1449,11 +1534,11 @@
       "userId": "user-1",
       "date": "2025-08-08",
       "tasksScore": 0,
-      "workoutScore": 0,
-      "mindScore": 0,
-      "routineScore": 0,
-      "devScore": 0,
-      "overallScore": 0,
+      "workoutScore": 100,
+      "mindScore": 43,
+      "routineScore": 20,
+      "devScore": 17,
+      "overallScore": 36,
       "createdAt": "2025-08-08T02:26:11.090Z"
     },
     "user-1-2025-08-09": {
@@ -1733,5 +1818,5 @@
       "createdAt": "2025-08-08T02:26:11.122Z"
     }
   },
-  "lastBackup": "2025-08-08T02:27:27.902Z"
+  "lastBackup": "2025-08-08T02:38:15.222Z"
 }
