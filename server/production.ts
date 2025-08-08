@@ -16,19 +16,29 @@ function log(message: string, source = "express") {
 
 // Production static file serving function
 function serveStatic(app: express.Express) {
-  const distPath = path.resolve(process.cwd(), "public");
+  // In production, static files are copied from dist/public to /app/public by Docker
+  const publicPath = path.resolve(process.cwd(), "public");
   
-  if (fs.existsSync(distPath)) {
-    app.use(express.static(distPath));
+  log(`Looking for static files in: ${publicPath}`);
+  
+  if (fs.existsSync(publicPath)) {
+    log("Serving static files from public directory");
+    app.use(express.static(publicPath));
+  } else {
+    log("Public directory not found");
   }
 
   // Serve the app for all non-API routes (SPA fallback)
   app.get("*", (req, res) => {
-    const indexPath = path.resolve(distPath, "index.html");
+    const indexPath = path.resolve(publicPath, "index.html");
+    log(`Looking for index.html at: ${indexPath}`);
+    
     if (fs.existsSync(indexPath)) {
+      log("Serving index.html");
       res.sendFile(indexPath);
     } else {
-      res.status(404).send("App not found");
+      log("index.html not found");
+      res.status(404).send("App not found - index.html missing");
     }
   });
 }
