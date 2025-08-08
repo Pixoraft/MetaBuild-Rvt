@@ -38,10 +38,11 @@ export function CalendarGrid({ currentDate }: CalendarGridProps) {
       }
     },
     enabled: !!user,
-    refetchInterval: 3000, // Refresh every 3 seconds for faster calendar updates
-    staleTime: 0, // Always consider data stale to force refetch
-    retry: 3, // Retry failed requests 3 times
-    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    refetchInterval: 15000, // Reduced to 15 seconds for calendar
+    staleTime: 0,
+    retry: 2,
+    retryDelay: 1000,
+    refetchOnWindowFocus: false
   });
 
   const getPerformanceColor = (day: Date) => {

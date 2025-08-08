@@ -27,9 +27,10 @@ export default function Dashboard() {
       }
     },
     enabled: !!user,
-    refetchInterval: 5000,
-    retry: 3,
-    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    refetchInterval: 10000, // Reduced to 10 seconds
+    retry: 2,
+    retryDelay: 1000,
+    refetchOnWindowFocus: false,
   });
 
   const { data: waterIntake } = useQuery<any>({
@@ -45,9 +46,10 @@ export default function Dashboard() {
       }
     },
     enabled: !!user,
-    refetchInterval: 5000,
-    retry: 3,
-    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    refetchInterval: 10000, // Reduced to 10 seconds to reduce server load
+    retry: 2, // Reduced retries
+    retryDelay: 1000, // Fixed 1 second delay
+    refetchOnWindowFocus: false, // Prevent refetch on window focus
   });
 
   const { data: tasks } = useQuery<any[]>({
@@ -63,9 +65,10 @@ export default function Dashboard() {
       }
     },
     enabled: !!user,
-    refetchInterval: 5000,
-    retry: 3,
-    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    refetchInterval: 10000, // Reduced to 10 seconds
+    retry: 2,
+    retryDelay: 1000,
+    refetchOnWindowFocus: false,
   });
 
   const { data: workoutLogs } = useQuery<any[]>({
@@ -81,9 +84,10 @@ export default function Dashboard() {
       }
     },
     enabled: !!user,
-    refetchInterval: 5000,
-    retry: 3,
-    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    refetchInterval: 10000, // Reduced to 10 seconds
+    retry: 2,
+    retryDelay: 1000,
+    refetchOnWindowFocus: false,
   });
 
   const performanceData = [
