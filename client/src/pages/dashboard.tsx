@@ -20,8 +20,19 @@ export default function Dashboard() {
 
   const { data: todaysPerformance } = useQuery<any>({
     queryKey: ['/api/daily-performance', today],
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/daily-performance?date=${today}`);
+        if (!response.ok) return null;
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error fetching performance data:', error);
+        return null;
+      }
+    },
     enabled: !!user,
-    refetchInterval: 30000, // Increased to 30 seconds to reduce server load
+    refetchInterval: 30000,
     retry: 1,
     retryDelay: 2000,
     refetchOnWindowFocus: false,
@@ -82,6 +93,8 @@ export default function Dashboard() {
       });
     },
   });
+
+
 
   const performanceData = [
     { name: "Daily Tasks", progress: todaysPerformance?.tasksScore || 0, color: "bg-blue-500", icon: "📋" },

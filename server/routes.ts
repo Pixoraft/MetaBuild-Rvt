@@ -65,6 +65,8 @@ async function calculateAndUpdateDailyPerformance(userId: string, date: string) 
     const scores = [tasksScore, workoutScore, mindScore, routineScore, devScore];
     const hasAnyActivity = tasks.length > 0 || workoutLogs.length > 0 || mindLogs.length > 0 || routineLogs.length > 0 || devGoalLogs.length > 0;
     const overallScore = hasAnyActivity ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
+    
+
 
     // Update daily performance
     await storage.upsertDailyPerformance({
