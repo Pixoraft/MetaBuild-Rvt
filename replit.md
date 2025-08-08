@@ -29,11 +29,14 @@ Preferred communication style: Simple, everyday language.
 - **Development**: Hot reload with Vite integration for seamless development experience
 
 ### Data Storage Solutions
-- **Database**: PostgreSQL with Neon serverless hosting
+- **Primary Storage**: JSON File Storage with automatic persistence
+- **Database**: PostgreSQL with Neon serverless hosting (available as alternative)
 - **ORM**: Drizzle ORM for type-safe database operations
 - **Schema**: Comprehensive schema covering users, tasks, workouts, routines, mind exercises, development goals, and performance tracking
 - **Migrations**: Drizzle Kit for database schema management
 - **Data Relationships**: Proper foreign key relationships with cascade deletes for data integrity
+- **Backup System**: Automatic daily backups at 12:01 AM with manual backup capability
+- **Data Persistence**: All user interactions are immediately saved to JSON files on the server
 
 ### Authentication and Authorization
 - **Provider**: Replit Auth with OpenID Connect flow
@@ -62,3 +65,5 @@ Preferred communication style: Simple, everyday language.
 **Performance Optimization**: TanStack Query provides intelligent caching, background updates, and optimistic updates for smooth user experience with minimal loading states.
 
 **Preloaded Data Structure**: The application includes comprehensive preloaded workout routines, development goals, and productivity templates that users can customize, providing immediate value without empty state friction.
+
+**Data Reliability**: Implemented JSON file storage system with automatic daily backups at 12:01 AM and manual backup functionality. All user data is immediately persisted to the server file system, preventing any data loss from browser refresh or session endings. The backup system maintains up to 30 historical snapshots with automatic cleanup.

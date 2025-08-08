@@ -604,6 +604,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Backup routes
+  app.post('/api/backup/manual', async (req: any, res) => {
+    try {
+      // Cast storage to JsonStorage to access manual backup method
+      const jsonStorage = storage as any;
+      if (jsonStorage.manualBackup) {
+        jsonStorage.manualBackup();
+        res.json({ 
+          success: true, 
+          message: 'Manual backup created successfully',
+          timestamp: new Date().toISOString()
+        });
+      } else {
+        res.status(400).json({ message: 'Manual backup not supported with current storage' });
+      }
+    } catch (error) {
+      console.error("Error creating manual backup:", error);
+      res.status(500).json({ message: "Failed to create manual backup" });
+    }
+  });
+
+  app.get('/api/backup/status', async (req: any, res) => {
+    try {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 1, 0, 0); // 12:01 AM
+      
+      res.json({
+        currentTime: now.toISOString(),
+        nextAutoBackup: tomorrow.toISOString(),
+        autoBackupEnabled: true,
+        storageType: 'JSON File Storage'
+      });
+    } catch (error) {
+      console.error("Error getting backup status:", error);
+      res.status(500).json({ message: "Failed to get backup status" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

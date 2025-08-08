@@ -26,7 +26,7 @@ import {
   type InsertDailyPerformance,
   type DailyPerformance,
 } from "@shared/schema";
-import { MemoryStorage } from "./memory-storage";
+import { JsonStorage } from "./json-storage";
 
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
@@ -80,4 +80,4 @@ export interface IStorage {
   clearPerformanceData(): void;
 }
 
-export const storage = new MemoryStorage();
+export const storage = new JsonStorage();

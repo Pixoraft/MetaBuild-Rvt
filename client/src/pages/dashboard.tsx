@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,13 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CalendarGrid } from "@/components/calendar-grid";
 import { ExportModal } from "@/components/export-modal";
-import { ChevronLeft, ChevronRight, Flame, Trophy, Download } from "lucide-react";
+import { ChevronLeft, ChevronRight, Flame, Trophy, Download, Save, Cloud } from "lucide-react";
 import { useState } from "react";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const today = format(new Date(), 'yyyy-MM-dd');
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: todaysPerformance } = useQuery<any>({
     queryKey: ['/api/daily-performance', today],
@@ -88,6 +92,35 @@ export default function Dashboard() {
     retry: 2,
     retryDelay: 1000,
     refetchOnWindowFocus: false,
+  });
+
+  // Backup status query
+  const { data: backupStatus } = useQuery<any>({
+    queryKey: ['/api/backup/status'],
+    refetchInterval: 60000, // Check every minute
+    enabled: !!user,
+  });
+
+  // Manual backup mutation
+  const createBackupMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest('POST', '/api/backup/manual', {});
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Backup Created",
+        description: "Your data has been successfully backed up to the server.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/backup/status'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Backup Failed",
+        description: "Failed to create backup. Please try again.",
+        variant: "destructive",
+      });
+    },
   });
 
   const performanceData = [
@@ -203,6 +236,50 @@ export default function Dashboard() {
             </div>
           </div>
           <CalendarGrid currentDate={currentDate} />
+        </section>
+
+        {/* Data Backup Status */}
+        <section className="p-4">
+          <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-4 border border-green-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                  <Cloud className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-800">Data Backup</h3>
+                  <p className="text-sm text-gray-600">
+                    {backupStatus?.nextAutoBackup 
+                      ? `Next auto backup: ${format(new Date(backupStatus.nextAutoBackup), 'h:mm a')}`
+                      : 'Auto backup scheduled for 12:01 AM'
+                    }
+                  </p>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                onClick={() => createBackupMutation.mutate()}
+                disabled={createBackupMutation.isPending}
+                className="bg-green-600 hover:bg-green-700 text-white"
+                data-testid="button-backup-manual"
+              >
+                {createBackupMutation.isPending ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Backup Now
+                  </>
+                )}
+              </Button>
+            </div>
+            <div className="mt-3 text-xs text-gray-500">
+              ✅ All your progress is automatically saved to the server every time you make changes
+            </div>
+          </div>
         </section>
 
         {/* Weekly Summary */}
