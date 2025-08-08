@@ -12,6 +12,7 @@ import Mind from "@/pages/mind";
 import Routine from "@/pages/routine";
 import Dev from "@/pages/dev";
 import Navigation from "@/components/navigation";
+import { InstallPrompt } from "@/components/install-prompt";
 
 function Router() {
   const { user, isLoading } = useAuth();
@@ -34,6 +35,7 @@ function Router() {
           <Route path="/routine" component={Routine} />
           <Route path="/dev" component={Dev} />
           <Navigation />
+          <InstallPrompt />
         </div>
       )}
       <Route component={NotFound} />
