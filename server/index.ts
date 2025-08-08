@@ -16,19 +16,33 @@ function log(message: string, source = "express") {
 
 // Production static file serving function
 function serveStatic(app: express.Express) {
-  const distPath = path.resolve(process.cwd(), "public");
+  // In production, try dist/public first (Render deployment), then fall back to public
+  let distPath = path.resolve(process.cwd(), "dist/public");
+  
+  if (!fs.existsSync(distPath)) {
+    distPath = path.resolve(process.cwd(), "public");
+  }
+  
+  log(`Looking for static files in: ${distPath}`);
   
   if (fs.existsSync(distPath)) {
+    log("Serving static files from: " + distPath);
     app.use(express.static(distPath));
+  } else {
+    log("Static files directory not found");
   }
 
   // Serve the app for all non-API routes (SPA fallback)
   app.get("*", (req, res) => {
     const indexPath = path.resolve(distPath, "index.html");
+    log(`SPA fallback: Looking for index.html at: ${indexPath}`);
+    
     if (fs.existsSync(indexPath)) {
+      log("Serving index.html via SPA fallback");
       res.sendFile(indexPath);
     } else {
-      res.status(404).send("App not found");
+      log("index.html not found");
+      res.status(404).send("App not found - index.html missing");
     }
   });
 }
