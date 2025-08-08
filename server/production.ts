@@ -15,7 +15,7 @@ function log(message: string, source = "express") {
 }
 
 // Production static file serving function
-function serveStatic(app: express.Express) {
+function serveStaticFiles(app: express.Express) {
   // In production, static files are copied from dist/public to /app/public by Docker
   const publicPath = path.resolve(process.cwd(), "public");
   
@@ -27,14 +27,19 @@ function serveStatic(app: express.Express) {
   } else {
     log("Public directory not found");
   }
+}
 
+// SPA fallback function
+function serveSPAFallback(app: express.Express) {
+  const publicPath = path.resolve(process.cwd(), "public");
+  
   // Serve the app for all non-API routes (SPA fallback)
   app.get("*", (req, res) => {
     const indexPath = path.resolve(publicPath, "index.html");
-    log(`Looking for index.html at: ${indexPath}`);
+    log(`SPA fallback: Looking for index.html at: ${indexPath}`);
     
     if (fs.existsSync(indexPath)) {
-      log("Serving index.html");
+      log("Serving index.html via SPA fallback");
       res.sendFile(indexPath);
     } else {
       log("index.html not found");
@@ -63,6 +68,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Serve static files FIRST in production (before API routes)
+serveStaticFiles(app);
+
 registerRoutes(app);
 
 // error handling middleware
@@ -75,8 +83,8 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   throw err;
 });
 
-// Serve static files in production
-serveStatic(app);
+// SPA fallback (after all routes)
+serveSPAFallback(app);
 
 app.listen(port, "0.0.0.0", () => {
   log(`serving on port ${port}`);
