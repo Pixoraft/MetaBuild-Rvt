@@ -6,10 +6,10 @@
       "firstName": "User",
       "lastName": "One",
       "profileImageUrl": null,
-      "currentStreak": 17,
-      "bestStreak": 17,
+      "currentStreak": 45,
+      "bestStreak": 45,
       "createdAt": "2025-08-08T02:26:10.058Z",
-      "updatedAt": "2025-08-08T03:45:04.732Z"
+      "updatedAt": "2025-08-08T05:13:21.728Z"
     }
   },
   "tasks": {
@@ -2081,5 +2081,5 @@
       "createdAt": "2025-08-08T02:26:11.122Z"
     }
   },
-  "lastBackup": "2025-08-08T03:45:04.732Z"
+  "lastBackup": "2025-08-08T05:13:21.728Z"
 }
